@@ -68,11 +68,11 @@ public class Cooldown implements Listener {
     /**
      * Creates a new cooldown
      * @param name
-     * @param durration
+     * @param duration The duration of the cooldown in milliseconds
      */
-    public void createCooldown(String name, long durration)
+    public void createCooldown(String name, long duration)
     {
-        _cooldownMap.put(name, System.currentTimeMillis() + durration);
+        _cooldownMap.put(name, System.currentTimeMillis() + duration);
     }
 
     /**

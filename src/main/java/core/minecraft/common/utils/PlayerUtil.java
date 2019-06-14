@@ -37,7 +37,7 @@ public class PlayerUtil {
             {
                 similarNames.append(matchedName + " ");
             }
-            similarNames.append("| size = " + matchingNames.size() + F.C_PREFIX + "]");
+            similarNames.append("| volume = " + matchingNames.size() + F.C_PREFIX + "]");
 
             caller.sendMessage(similarNames.toString());
         }
