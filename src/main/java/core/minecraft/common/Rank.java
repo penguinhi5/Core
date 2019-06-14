@@ -10,12 +10,15 @@ import org.bukkit.entity.Player;
  */
 public enum Rank {
 
-    LEADER("Owner", ChatColor.DARK_BLUE, false),
-    ADMIN("Admin", ChatColor.DARK_BLUE, false),
-    DEV("Dev", ChatColor.DARK_BLUE, false),
-    SENIOR_MOD("SrMod", ChatColor.RED, false),
-    MOD("Mod", ChatColor.RED, false),
-    TRIAL_MOD("Trial-Mod", ChatColor.RED, false),
+    OWNER("Owner", ChatColor.DARK_RED, false),
+    ADMIN("Admin", ChatColor.BLUE, false),
+    DEV("Dev", ChatColor.RED, false),
+    SENIOR_MOD("Sr.Mod", ChatColor.GOLD, false),
+    MOD("Mod", ChatColor.YELLOW, false),
+    TRAINEE("Trainee", ChatColor.DARK_AQUA, false),
+    BUILDER("Builder", ChatColor.DARK_PURPLE, false),
+    YOUTUBE("YT", ChatColor.DARK_BLUE, false),
+    TWITCH("Twitch", ChatColor.DARK_BLUE, false),
     DEFAULT("", ChatColor.GRAY, true);
 
     public String _displayName;

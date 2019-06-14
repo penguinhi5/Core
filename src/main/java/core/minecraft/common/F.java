@@ -11,7 +11,7 @@ public class F {
 
     public static final String BOLD = ChatColor.BOLD.toString();
 
-    public static final String C_PREFIX = ChatColor.GREEN.toString();
+    public static final String C_PREFIX = ChatColor.GOLD.toString();
     public static final String C_ERROR_PREFIX = ChatColor.DARK_RED.toString();
     public static final String C_CONTENT = ChatColor.GRAY.toString();
     public static final String C_EMPHASIS = ChatColor.WHITE.toString();
@@ -50,9 +50,9 @@ public class F {
      */
     public static String insufficientRankMessage(Rank requiredRank)
     {
-        String msg = C_ERROR_PREFIX + BOLD + "(!) " + C_CONTENT + "Insufficient Rank - You must have the rank " +
+        String msg = C_ERROR_PREFIX + BOLD + "Permissions> " + C_CONTENT + "[\"" +
                 requiredRank.getDisplayName(false, true, true) +
-                C_CONTENT + " to complete this action";
+                C_CONTENT + "\"] Permission is required to do that";
         return msg;
     }
 

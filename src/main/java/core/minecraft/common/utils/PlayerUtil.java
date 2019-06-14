@@ -2,6 +2,7 @@ package core.minecraft.common.utils;
 
 import core.minecraft.common.F;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  *
  * @author Preston Brown
  */
-public class PlayerUtil {
+public class PlayerUtil implements PluginMessageListener {
 
     /**
      * Searches for name in matchingNames. If matchingNames contains name than true will be returned,
@@ -51,6 +52,11 @@ public class PlayerUtil {
      */
     public static void killPlayer(Player player)
     {
+        //TODO
+    }
+
+    @Override
+    public void onPluginMessageReceived(String s, Player player, byte[] bytes) {
 
     }
 }

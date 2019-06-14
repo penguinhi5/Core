@@ -9,7 +9,9 @@ public enum MapType {
 
     ALL(""),
     HUB("hub"),
-    LOBBY("lobby");
+    LOBBY("lobby"),
+    TEAM_MINIGAME("team minigame"),
+    SOLO_MINIGAME("solo minigame");
 
     private String _directoryName;
 

@@ -42,7 +42,7 @@ public class SetRank extends CommandBase<ClientManager> {
         Rank newRank = null;
         try
         {
-            newRank = Rank.valueOf(args[1]);
+            newRank = Rank.valueOf(args[1].toUpperCase());
         }
         catch (IllegalArgumentException e)
         {

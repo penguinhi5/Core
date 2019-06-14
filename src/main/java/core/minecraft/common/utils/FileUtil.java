@@ -1,6 +1,9 @@
 package core.minecraft.common.utils;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.*;
+import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -50,6 +53,10 @@ public class FileUtil {
     public static String searchForFile(File container, String searchFor)
     {
         File[] listFiles = container.listFiles();
+        if (listFiles == null)
+        {
+            return null;
+        }
         for (File file : listFiles)
         {
             if (file.getName().equalsIgnoreCase(searchFor))
@@ -66,5 +73,26 @@ public class FileUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Deletes the specified file or directory and all of it contents.
+     *
+     * @param file the file that is being deleted
+     */
+    public static void deleteFile(File file)
+    {
+        File[] contents = file.listFiles();
+        if (contents != null)
+        {
+            for (File f : contents)
+            {
+                if (! Files.isSymbolicLink(f.toPath()))
+                {
+                    deleteFile(f);
+                }
+            }
+        }
+        file.delete();
     }
 }

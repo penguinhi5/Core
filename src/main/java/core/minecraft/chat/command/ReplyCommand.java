@@ -41,7 +41,8 @@ public class ReplyCommand extends CommandBase<ChatManager> {
         if (receiver != null)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(ChatColor.BLUE + ChatColor.BOLD.toString() + "-> " + ChatColor.RESET + ChatColor.WHITE + ChatColor.BOLD + receiver.getName() + "≫ " + ChatColor.BLUE);
+            stringBuilder.append(ChatColor.GREEN + ChatColor.BOLD.toString() + "-> " +
+                    ChatColor.DARK_GREEN + ChatColor.BOLD + receiver.getName() + " " + ChatColor.GREEN + ChatColor.BOLD);
             for (int i = 0; i < args.length; i++)
             {
                 stringBuilder.append(args[i] + " ");
@@ -49,7 +50,7 @@ public class ReplyCommand extends CommandBase<ChatManager> {
             player.sendMessage(stringBuilder.toString());
 
             stringBuilder = new StringBuilder();
-            stringBuilder.append(ChatColor.BLUE + ChatColor.BOLD.toString() + "<- " + ChatColor.RESET + ChatColor.WHITE + ChatColor.BOLD + player.getName() + "≫ " + ChatColor.BLUE);
+            stringBuilder.append(ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + player.getName() + " " + ChatColor.GREEN + ChatColor.BOLD);
             for (int i = 0; i < args.length; i++)
             {
                 stringBuilder.append(args[i] + " ");

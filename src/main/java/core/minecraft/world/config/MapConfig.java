@@ -1,5 +1,6 @@
 package core.minecraft.world.config;
 
+import core.minecraft.world.MapType;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -24,11 +25,13 @@ public class MapConfig {
     private HashMap<String, List<Location>> _spawnMap = new HashMap<>();
     private int _minX, _maxX, _minY, _maxY, _minZ, _maxZ;
     private String _name, _author;
+    private MapType _mapType;
 
-    public MapConfig(String worldDirectory, World world)
+    public MapConfig(String worldDirectory, World world, MapType type)
     {
         _worldDirectory = worldDirectory;
         _world = world;
+        _mapType = type;
         readConfig();
     }
 
@@ -172,6 +175,16 @@ public class MapConfig {
             }
         }
         return loc;
+    }
+
+    /**
+     * Gets the MapType of this world
+     *
+     * @return the MapType
+     */
+    public MapType getMapType()
+    {
+        return _mapType;
     }
 
     /**

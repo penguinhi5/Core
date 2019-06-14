@@ -54,7 +54,7 @@ public class ChatManager extends Component implements Listener {
     {
         Player speaker = event.getPlayer();
         Rank rank = _clientManager.getPlayerData(speaker).getRank();
-        event.setFormat(rank.getDisplayName() + ChatColor.RESET + " " + speaker.getName() + F.BOLD + "≫ " + ChatColor.GRAY + event.getMessage());
+        event.setFormat(rank.getDisplayName() + ChatColor.RESET + " " + speaker.getName() + F.BOLD + "≫ " + ChatColor.WHITE + ChatColor.translateAlternateColorCodes('&', event.getMessage()));
 
         long silencedTime = Cooldown.getInstance().getCooldownTime("silence chat");
         if (!rank.hasRank(speaker, Rank.MOD))
@@ -72,6 +72,7 @@ public class ChatManager extends Component implements Listener {
                 return;
             }
         }
+
     }
 
     /**
