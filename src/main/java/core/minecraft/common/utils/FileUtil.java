@@ -1,7 +1,5 @@
 package core.minecraft.common.utils;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.util.zip.ZipEntry;

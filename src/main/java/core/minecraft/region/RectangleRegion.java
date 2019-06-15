@@ -106,26 +106,31 @@ public class RectangleRegion extends Region {
     }
 
     @Override
-    protected boolean containsLoc(Location loc)
+    public boolean containsLoc(Location loc)
     {
+        // If the location is in the right world
+        if (loc.getWorld() != world)
+        {
+            return false;
+        }
+
         // If the location's X value falls outside of the rectangle's max and min X value
-        if (centerX - width > loc.getX() || centerX + width < loc.getX())
+        if (centerX - width / 2 > loc.getX() || centerX + width / 2 < loc.getX())
         {
             return false;
         }
 
         // If the location's Y value falls outside of the rectangle's max and min Y value
-        if (centerY - height > loc.getY() || centerY + height < loc.getY())
+        if (centerY - height / 2 > loc.getY() || centerY + height / 2 < loc.getY())
         {
             return false;
         }
 
         // If the location's Z value falls outside of the rectangle's max and min Z value
-        if (centerZ - length > loc.getZ() || centerZ + length < loc.getZ())
+        if (centerZ - length / 2 > loc.getZ() || centerZ + length / 2 < loc.getZ())
         {
             return false;
         }
-
         return true;
     }
 }

@@ -25,11 +25,14 @@ public abstract class Region {
 
     /**
      * Contains all of the flags in the region.
-     *
-     * A full list of flags can be found here: www.google.com/
      */
-    private LinkedList<String> flags = new LinkedList<>();
-    // TODO YOU WILL HAVE TO HANDLE FLAGS SUCH AS NO DAMAGE IN REGIONMANAGER AND CHECK IF THE PLAYER IS WITHIN THE REGION MAYBE
+    private LinkedList<String> _flags = new LinkedList<>();
+
+    /**
+     * This region's priority compared to other regions when there are conflicting flags.
+     *
+     * The lower the number the higher the priority.
+     */
     private int priority = 100;
 
     /**
@@ -38,7 +41,7 @@ public abstract class Region {
     private String name;
 
     /**
-     * The unique id of this region
+     * The unique id of this region.
      */
     private String id;
 
@@ -47,7 +50,7 @@ public abstract class Region {
      */
     public Region(List<String> flags, String name, String id, World world)
     {
-        flags.addAll(flags);
+        _flags.addAll(flags);
         this.name = name;
         this.id = id;
         this.world = world;
@@ -85,7 +88,7 @@ public abstract class Region {
      * @param loc The location being checked
      * @return true if the region contains the location, otherwise false.
      */
-    protected abstract boolean containsLoc(Location loc);
+    public abstract boolean containsLoc(Location loc);
 
     /**
      * Updates the priority of the region.
@@ -113,9 +116,9 @@ public abstract class Region {
      * @param flag The flag that is being searched for
      * @return true if the region contains the flag, otherwise false.
      */
-    public boolean containsFlag(String flag)
+    public boolean hasFlag(String flag)
     {
-        return flags.contains(flag.toLowerCase());
+        return _flags.contains(flag.toLowerCase());
     }
 
     /**
@@ -125,7 +128,7 @@ public abstract class Region {
      */
     public void addFlag(String flag)
     {
-        flags.add(flag.toLowerCase());
+        _flags.add(flag);
     }
 
     /**
@@ -142,16 +145,5 @@ public abstract class Region {
     public String getName()
     {
         return name;
-    }
-
-    /**
-     * Checks if this region contains the specified flag.
-     *
-     * @param flag The flag we are checking for
-     * @return true if this region contains the flag, otherwise false
-     */
-    public boolean hasFlag(String flag)
-    {
-        return flags.contains(flag);
     }
 }

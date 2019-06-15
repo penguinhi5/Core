@@ -1,31 +1,35 @@
 package core.minecraft.region;
 
 import core.minecraft.Component;
+import core.minecraft.region.flags.PlayerEnterRegionFlag;
+import core.minecraft.region.flags.BaseRegionFlagTriggerEvent;
+import core.minecraft.region.flags.PlayerLeaveRegionFlag;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
-import java.util.List;
 
+/**
+ * Manages all of the regions on this server instance.
+ */
 public class RegionManager extends Component {
 
+    /**
+     * All of the existing regions.
+     */
     private HashMap<String, Region> _regions = new HashMap<String, Region>();
 
-    private static RegionManager _instance;
-
+    /**
+     * Creates a new RegionManager instance.
+     *
+     * @param plugin the main JavaPlugin instance
+     */
     public RegionManager(JavaPlugin plugin)
     {
         super("Regions", plugin);
-    }
 
-    /**
-     * Initializes this class.
-     */
-    public static void initialize(JavaPlugin plugin)
-    {
-        if (_instance == null)
-        {
-            _instance = new RegionManager(plugin);
-        }
+        // registers all of the flags so they start listening to be triggered
+        registerFlags();
     }
 
     /**
@@ -48,18 +52,33 @@ public class RegionManager extends Component {
         return true;
     }
 
-    public RegionManager getInstance()
+    /**
+     * @return a map containing all of the regions and their IDs
+     */
+    public HashMap<String, Region> getRegions()
     {
-        return _instance;
+        // returns a copy of _regions
+        return new HashMap<String, Region>(_regions);
     }
 
-    public List<Region>()
+    /**
+     * Calls the BaseRegionFlagTriggerEvent when a flag has been triggered in a region.
+     *
+     * @param event the BaseRegionFlagTriggerEvent that will be called
+     */
+    public void callRegionFlagTriggerEvent(BaseRegionFlagTriggerEvent event)
     {
-
+        getPlugin().getServer().getPluginManager().callEvent(event);
     }
 
-    // TODO also make it so another class checks for different flags such as enter and exit
-    // TODO and it checks by seeing if all _regions has that flag and if they do they compare the
-    // TODO player location to the region
-    // TODO ALSO make this class static so you can create a region without a reference to the class
+    /**
+     * Registers all of the flags so they begin to listen for them to be triggered. (Note: make sound better)
+     */
+    private void registerFlags()
+    {
+        // IMPORTANT: all flags must be instantiated here
+        Bukkit.getPluginManager().registerEvents(new PlayerEnterRegionFlag(this), getPlugin());
+        Bukkit.getPluginManager().registerEvents(new PlayerLeaveRegionFlag(this), getPlugin());
+    }
+
 }
