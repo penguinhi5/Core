@@ -19,7 +19,7 @@ public class PlayerEnterRegionFlag implements Listener {
     /**
      * The unique ID used to keep track of this flag.
      */
-    private static String _flagID = "playerenterregion";
+    public static final String FLAG_ID = "playerenterregion";
 
     /**
      * The main RegionManager instance.
@@ -40,18 +40,10 @@ public class PlayerEnterRegionFlag implements Listener {
         for(Region region : _regionManager.getRegions().values())
         {
             // if the region has this flag, contains the player, and didn't previously contain the player
-            if (region.hasFlag(_flagID) && region.containsLoc(event.getTo()) && !region.containsLoc(event.getFrom()))
+            if (region.hasFlag(FLAG_ID) && region.containsLoc(event.getTo()) && !region.containsLoc(event.getFrom()))
             {
                 _regionManager.callRegionFlagTriggerEvent(new PlayerEnterRegionEvent(region.getID(), event.getPlayer()));
             }
         }
-    }
-
-    /**
-     * @return the unique global name of this flag
-     */
-    public static String getFlagID()
-    {
-        return _flagID;
     }
 }
