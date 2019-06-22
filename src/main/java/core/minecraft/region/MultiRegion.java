@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a region made up of multiple subregions.
+ * Represents a region made up of multiple regions.
  */
 public class MultiRegion extends Region {
 
