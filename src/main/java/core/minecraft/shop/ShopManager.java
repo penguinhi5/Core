@@ -1,5 +1,6 @@
 package core.minecraft.shop;
 
+import core.minecraft.command.CommandManager;
 import core.minecraft.common.F;
 import core.minecraft.gui.GUIManager;
 import core.minecraft.gui.page.PageBase;
@@ -31,10 +32,12 @@ public abstract class ShopManager extends GUIManager implements Listener {
      * This creates a new {@link ShopManager} instance.
      *
      * @param plugin the main JavaPlugin instance
+     * @param transactionManager the main TransactionManager instance
+     * @param commandManager the main CommandManager instance
      */
-    public ShopManager(JavaPlugin plugin, TransactionManager transactionManager)
+    public ShopManager(JavaPlugin plugin, TransactionManager transactionManager, CommandManager commandManager)
     {
-        super("Sales", plugin);
+        super("Sales", plugin, commandManager);
         _transactionManager = transactionManager;
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
     }
@@ -49,7 +52,7 @@ public abstract class ShopManager extends GUIManager implements Listener {
     {
         if (_failedPurchases.containsKey(player))
         {
-            player.sendMessage(F.errorMessage("Please wait a few more seconds before trying to purchase this item again"));
+            player.sendMessage(F.errorMessage("Please wait a few more seconds before trying to purchase this inventory again"));
             return;
         }
 
@@ -58,8 +61,7 @@ public abstract class ShopManager extends GUIManager implements Listener {
             _returnPageMap.put(player.getName(), _playerPageMap.get(player.getName()));
         }
         ConfirmationPage confirmationPage = new ConfirmationPage(player, salesItem, this);
-        setPlayerPage(player, confirmationPage);
-        openPageForPlayer(player, confirmationPage);
+        openPageForPlayer(confirmationPage);
     }
 
     /**
@@ -72,8 +74,7 @@ public abstract class ShopManager extends GUIManager implements Listener {
     {
         if (_returnPageMap.containsKey(player.getName()))
         {
-            setPlayerPage(player, _returnPageMap.get(player.getName()));
-            openPageForPlayer(player, _returnPageMap.get(player.getName()));
+            openPageForPlayer(_returnPageMap.get(player.getName()));
             _returnPageMap.remove(player.getName());
         }
         else
@@ -83,9 +84,9 @@ public abstract class ShopManager extends GUIManager implements Listener {
     }
 
     /**
-     * If a player attempts to purchase an item but the purchase fails.
+     * If a player attempts to purchase a SalesItem but the purchase fails.
      *
-     * @param player the player that attempted to purchase the item
+     * @param player the player that attempted to purchase the inventory
      */
     public void handleFailedPurchase(Player player)
     {

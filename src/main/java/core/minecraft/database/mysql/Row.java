@@ -33,7 +33,17 @@ public class Row {
     }
 
     /**
-     * Gets the {{@link Column} object with the specified name. If no column exists with
+     * Adds the given column to the end of the row.
+     *
+     * @param column the column being added to the row
+     */
+    public void addColumn(Column column)
+    {
+        _columns.put(column.getName(), column);
+    }
+
+    /**
+     * Gets the {@link Column} object with the specified name. If no column exists with
      * this name null will be returned;
      *
      * @return the {@link Column} object with the specified name

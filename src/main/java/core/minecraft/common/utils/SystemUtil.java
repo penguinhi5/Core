@@ -9,6 +9,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class SystemUtil {
 
+    /**
+     * Gets the written time remaining until the unix timestamp provided.
+     *
+     * @param time the future unix timestamp
+     * @return the written time remaining until the unix timestamp
+     */
     public static String getWrittenTimeRemaining(long time)
     {
         long remainingTime = time;
@@ -23,35 +29,35 @@ public class SystemUtil {
         StringBuilder stringBuilder = new StringBuilder();
         if (days > 1)
         {
-            stringBuilder.append(days + "days ");
+            stringBuilder.append(days + " days ");
         }
         else if (days == 1)
         {
-            stringBuilder.append(days + "day ");
+            stringBuilder.append(days + " day ");
         }
         if (hours > 1)
         {
-            stringBuilder.append(hours + "hours ");
+            stringBuilder.append(hours + " hours ");
         }
         else if (hours == 1)
         {
-            stringBuilder.append(hours + "hour ");
+            stringBuilder.append(hours + " hour ");
         }
         if (minutes > 1)
         {
-            stringBuilder.append(minutes + "mins ");
+            stringBuilder.append(minutes + " minutes ");
         }
         else if (minutes == 1)
         {
-            stringBuilder.append(minutes + "min ");
+            stringBuilder.append(minutes + "minute ");
         }
         if (seconds > 1)
         {
-            stringBuilder.append(seconds + "secs ");
+            stringBuilder.append(seconds + "seconds ");
         }
         else if (seconds == 1)
         {
-            stringBuilder.append(seconds + "sec ");
+            stringBuilder.append(seconds + "second ");
         }
         return stringBuilder.toString().trim();
     }

@@ -9,11 +9,11 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Preston Brown
  */
-public class DummyBtn implements Button {
+public class DummyButton implements Button {
 
     ItemStack _item;
 
-    public DummyBtn(ItemStack item)
+    public DummyButton(ItemStack item)
     {
         _item = item;
     }

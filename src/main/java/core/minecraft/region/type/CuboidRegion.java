@@ -1,4 +1,4 @@
-package core.minecraft.region;
+package core.minecraft.region.type;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,6 +20,9 @@ public class CuboidRegion extends Region {
     /**
      * Creates a new rectangular region using 2 corner locations.
      *
+     * @param flags The flags associated with this region
+     * @param name The name of the region
+     * @param id The unique ID used to identify the region
      * @param world The world this region is located in
      * @param corner1 The location of one corner in the region
      * @param corner2 The location of the opposite corner in the region

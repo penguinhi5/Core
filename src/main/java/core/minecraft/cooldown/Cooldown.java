@@ -66,7 +66,8 @@ public class Cooldown implements Listener {
     }
 
     /**
-     * Creates a new cooldown
+     * Creates a new cooldown. If a cooldown is already running with the same name it will be replaced.
+     *
      * @param name
      * @param duration The duration of the cooldown in milliseconds
      */

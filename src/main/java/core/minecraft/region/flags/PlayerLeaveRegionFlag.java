@@ -1,6 +1,6 @@
 package core.minecraft.region.flags;
 
-import core.minecraft.region.Region;
+import core.minecraft.region.type.Region;
 import core.minecraft.region.RegionManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

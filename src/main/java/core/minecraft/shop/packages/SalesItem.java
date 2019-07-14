@@ -7,7 +7,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * This will store a SalesPackageBase as well as the item that is being presented.
+ * This will store a SalesPackageBase as well as the inventory that is being presented.
  *
  * @author Preston Brown
  */
@@ -37,7 +37,7 @@ public abstract class SalesItem implements Button {
     }
 
     /**
-     * Returns the shop package that this item represents.
+     * Returns the shop package that this inventory represents.
      *
      * @return the shop package
      */

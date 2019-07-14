@@ -2,6 +2,7 @@ package core.minecraft.shop.packages;
 
 import core.minecraft.client.ClientManager;
 import core.minecraft.common.Callback;
+import core.minecraft.transaction.TransactionResponse;
 import org.bukkit.entity.Player;
 
 /**
@@ -18,5 +19,11 @@ public abstract class SalesPackageBase {
         _clientManager = clientManager;
     }
 
-    public abstract void purchaseSalesPackageForPlayer(Player player, Callback<Boolean> callback);
+    /**
+     * Purchases the sales package for the given player.
+     *
+     * @param player the player purchasing the sales package
+     * @param callback the callback that will be called with the TransactionResponse
+     */
+    public abstract void purchaseSalesPackageForPlayer(Player player, Callback<TransactionResponse> callback);
 }

@@ -1,6 +1,7 @@
 package core.minecraft.gui;
 
 import core.minecraft.Component;
+import core.minecraft.command.CommandManager;
 import core.minecraft.gui.page.PageBase;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
@@ -28,35 +29,43 @@ public abstract class GUIManager extends Component implements Listener {
      *
      * @param name   the name of the new component
      * @param plugin the main JavaPlugin instance
+     * @param commandManager the main CommandManager instance
      */
-    public GUIManager(String name, JavaPlugin plugin)
+    public GUIManager(String name, JavaPlugin plugin, CommandManager commandManager)
     {
-        super(name, plugin);
+        super(name, plugin, commandManager);
 
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
     }
 
     /**
-     * Updates the player's page to the given page and opens it.
+     * Opens the page for the player.
      *
-     * @param player
-     * @param page
+     * @param page the page that is being opened
      */
-    public void setPlayerPage(Player player, PageBase page)
+    public void openPageForPlayer(PageBase page)
     {
-        _playerPageMap.put(player.getName(), page);
+        _playerPageMap.put(page.getOwner().getName(), page);
+        _playerPageMap.get(page.getOwner().getName()).openInventory();
     }
 
     /**
-     * Opens the page for the player.
+     * Returns the name of the page that is currently opened by the player. If the player does not currently have
+     * a page opened an empty string is returned.
      *
-     * @param player the player that is opening the page
-     * @param page the page that is being opened
+     * @param player the player object that we are checking if they have a page currently opened
+     * @return the name of the page the player currently has opened, if the player doesn't have a page open an
+     * empty string is returned.
      */
-    public void openPageForPlayer(Player player, PageBase page)
+    public String getCurrentlyOpenedPageForPlayer(Player player)
     {
-        _playerPageMap.put(player.getName(), page);
-        _playerPageMap.get(player.getName()).openInventory();
+        // Checks if the player has a GUI opened
+        if (_playerPageMap.get(player.getName()) != null)
+        {
+            return _playerPageMap.get(player.getName()).getInventoryName();
+        }
+
+        return "";
     }
 
     @EventHandler

@@ -9,6 +9,6 @@ public enum TransactionResponse {
 
     SUCCESSFUL,
     FAILED,
-    ALREADY_OWENED,
+    ALREADY_OWNED,
     INSUFFICIENT_FUNDS;
 }

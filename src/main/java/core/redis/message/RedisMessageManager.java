@@ -97,10 +97,6 @@ public class RedisMessageManager {
             if (command.isTargetServer(_thisServerName))
             {
                 command.run();
-                if (type.getCallback() != null)
-                {
-                    type.getCallback().call(command);
-                }
             }
         }
     }

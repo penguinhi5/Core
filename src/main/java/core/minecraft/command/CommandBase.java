@@ -16,11 +16,10 @@ import java.util.List;
  *
  * @author Preston Brown
  */
-public abstract class CommandBase<ComponentPlugin extends Component> implements CommandInstance {
+public abstract class CommandBase implements CommandInstance {
 
     protected String _name;
     protected List<String> _aliases;
-    protected ComponentPlugin _plugin;
     protected Rank _requiredRank;
     protected Rank[] _additionalRanks;
     protected ClientManager _clientManager;
@@ -28,28 +27,25 @@ public abstract class CommandBase<ComponentPlugin extends Component> implements 
     /**
      * Creates a new instance of CommandBase with the given data.
      *
-     * @param plugin the Component initializing the command
      * @param name the name of the command that must be types in chat in order to execute the command
      * @param aliases any aliases can be typed in chat that will also execute the command
      * @param requiredRank the rank required to execute the command
      */
-    public CommandBase(ComponentPlugin plugin, ClientManager clientManager, String name, String[] aliases, Rank requiredRank)
+    public CommandBase(ClientManager clientManager, String name, String[] aliases, Rank requiredRank)
     {
-        this(plugin, clientManager, name, aliases, requiredRank, new Rank[] {});
+        this(clientManager, name, aliases, requiredRank, new Rank[] {});
     }
 
     /**
      * Creates a new instance of CommandBase with the given data.
      *
-     * @param plugin the Component initializing the command
      * @param name the name of the command that must be types in chat in order to execute the command
      * @param aliases any aliases can be typed in chat that will also execute the command
      * @param requiredRank the rank required to execute the command
      * @param additionalRanks any additional ranks that can execute the command
      */
-    public CommandBase(ComponentPlugin plugin, ClientManager clientManager, String name, String[] aliases, Rank requiredRank, Rank[] additionalRanks)
+    public CommandBase(ClientManager clientManager, String name, String[] aliases, Rank requiredRank, Rank[] additionalRanks)
     {
-        _plugin = plugin;
         _clientManager = clientManager;
         _name = name;
         _aliases = Arrays.asList(aliases);

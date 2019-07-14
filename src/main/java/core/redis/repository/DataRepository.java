@@ -23,7 +23,7 @@ public interface DataRepository<DataType extends RedisData> {
      * Returns the {@link DataType} object with the given data ID.
      *
      * @param ID the ID that is being looked up in this repository
-     * @return the {@link DataType} object with the given ID
+     * @return the {@link DataType} object with the given ID, if no DataType object exists with the ID null is returned
      */
     public DataType getData(String ID);
 
@@ -43,9 +43,9 @@ public interface DataRepository<DataType extends RedisData> {
      * amount of time has been reached data will be removed from the repository.
      *
      * @param data the data this is being added into the repository
-     * @param timeout the amount of time that must pass in order to automatically remove data from the repository
+     * @param timeout the amount of time in seconds that must pass in order to automatically remove data from the repository
      */
-    public void addData(DataType data, long timeout);
+    public void addData(DataType data, int timeout);
 
     /**
      * Removes the given {@link DataType} object from this repository if it exists.
@@ -78,25 +78,4 @@ public interface DataRepository<DataType extends RedisData> {
      * @return true if ID exists in this repository, otherwise false
      */
     public boolean exists(String ID);
-
-    /**
-     * Removes all of the data in the data repository that has expired.
-     *
-     * @return the number of elements removed
-     */
-    public int cleanData();
-
-    /**
-     * Retrieves all of the data in this data repository that has not yet timed out.
-     *
-     * @return all of the data that has not yet timed out
-     */
-    public List<DataType> getLivingData();
-
-    /**
-     * Retrieves all of the data in this data repository that has timed out.
-     *
-     * @return all of the data that has timed out
-     */
-    public List<DataType> getDeceasedData();
 }

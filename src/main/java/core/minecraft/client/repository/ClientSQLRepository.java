@@ -22,7 +22,7 @@ import java.util.UUID;
  */
 public class ClientSQLRepository extends MySQLRepositoryBase {
 
-    private final String CREATE_CLIENTS_TABLE = "CREATE TABLE IF NOT EXISTS client.clients ( id INT NOT NULL AUTO_INCREMENT , name VARCHAR(16) NOT NULL , uuid VARCHAR(36) NOT NULL , rank VARCHAR(16) NULL DEFAULT NULL , purchasedRank VARCHAR(16) NULL DEFAULT NULL , crystals INT NOT NULL DEFAULT 0 , lastLogin DATETIME NULL DEFAULT NULL , totalPlayTime BIGINT NOT NULL DEFAULT 0 , PRIMARY KEY (id) , UNIQUE (uuid)) ENGINE = InnoDB;";
+    private final String CREATE_CLIENTS_TABLE = "CREATE TABLE IF NOT EXISTS client.clients ( id INT NOT NULL AUTO_INCREMENT , name VARCHAR(16) NOT NULL , uuid VARCHAR(36) NOT NULL , rank VARCHAR(16) NULL DEFAULT NULL , purchasedRank VARCHAR(16) NULL DEFAULT NULL , lastLogin DATETIME NULL DEFAULT NULL , totalPlayTime BIGINT NOT NULL DEFAULT 0 , PRIMARY KEY (id) , UNIQUE (uuid)) ENGINE = InnoDB;";
     private final String INSERT_NEW_LOGIN = "INSERT INTO clients(name, uuid, lastLogin) VALUES (?, ?, NOW());";
     private final String UPDATE_LOGIN = "UPDATE clients SET name=?, lastLogin=NOW() WHERE uuid=?;";
     private final String UPDATE_RANK = "UPDATE clients SET rank=? WHERE uuid=?;";
@@ -83,16 +83,16 @@ public class ClientSQLRepository extends MySQLRepositoryBase {
                 });
             }
 
-//            if (row != null)
-//            {
-//                for (ClientLoginProcessor loginProcess : loginProcesses.values())
-//                {
-//                    statement = connection.createStatement();
-//                    statement.execute(loginProcess.getQuery(name, playerUUID));
-//                    loginProcess.processResultSet(statement.getResultSet());
-//                    statement.close();
-//                }
-//            }
+            if (row != null)
+            {
+                for (ClientLoginProcessor loginProcess : loginProcesses.values())
+                {
+                    statement = connection.createStatement();
+                    statement.execute(loginProcess.getQuery(name, playerUUID));
+                    loginProcess.processResultSet(statement.getResultSet());
+                    statement.close();
+                }
+            }
         }
         catch (SQLException e)
         {

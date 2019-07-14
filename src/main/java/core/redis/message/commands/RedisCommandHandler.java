@@ -8,7 +8,7 @@ import core.redis.message.commands.RedisCommand;
  *
  * @author Preston Brown
  */
-public abstract class RedisCommandHandler<T extends RedisCommand> implements Callback<T> {
+public abstract class RedisCommandHandler<T extends RedisCommand> {
 
-    public abstract T call(T callback);
+    public abstract void handleCommand(T callback);
 }

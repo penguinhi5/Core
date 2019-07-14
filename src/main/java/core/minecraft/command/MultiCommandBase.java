@@ -16,7 +16,7 @@ import java.util.HashMap;
  *
  * @author PenguinHi5
  */
-public abstract class MultiCommandBase<ComponentPlugin extends Component> extends CommandBase<ComponentPlugin> {
+public abstract class MultiCommandBase extends CommandBase {
 
     protected HashMap<String, CommandInstance> _subCommands;
     protected CommandInstance _defaultCommand;
@@ -24,29 +24,27 @@ public abstract class MultiCommandBase<ComponentPlugin extends Component> extend
     /**
      * Creates an instance of the MultiCommandBase
      *
-     * @param plugin the component initializing the command
      * @param name the main command label
      * @param aliases any additional command labels
      * @param requiredRank the rank required to execute the command
      */
-    public MultiCommandBase(ComponentPlugin plugin, ClientManager clientManager, String name, String[] aliases, Rank requiredRank)
+    public MultiCommandBase(ClientManager clientManager, String name, String[] aliases, Rank requiredRank)
     {
-        super(plugin, clientManager, name, aliases, requiredRank);
+        super(clientManager, name, aliases, requiredRank);
         _subCommands = new HashMap<>();
     }
 
     /**
      * Creates an instance of the MultiCommandBase
      *
-     * @param plugin the component initializing the command
      * @param name the main command label
      * @param aliases any additional command labels
      * @param requiredRank the rank required to execute the command
      * @param additionalRanks any additional ranks that can run the command
      */
-    public MultiCommandBase(ComponentPlugin plugin, ClientManager clientManager, String name, String[] aliases, Rank requiredRank, Rank[] additionalRanks)
+    public MultiCommandBase(ClientManager clientManager, String name, String[] aliases, Rank requiredRank, Rank[] additionalRanks)
     {
-        super(plugin, clientManager, name, aliases, requiredRank, additionalRanks);
+        super(clientManager, name, aliases, requiredRank, additionalRanks);
         _subCommands = new HashMap<>();
     }
 

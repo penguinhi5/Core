@@ -3,11 +3,11 @@ package core.minecraft.transaction.data;
 import core.minecraft.common.Callback;
 
 /**
- * This is a token that is used when a player is rewarded crystals.
+ * This is a data that is used when a player is rewarded crystals.
  *
  * @author Preston Brown
  */
-public class CrystalRewardToken {
+public class CurrencyRewardToken {
 
     public int _clientID;
     public int _count;
@@ -15,14 +15,14 @@ public class CrystalRewardToken {
     private Callback<Boolean> _callback;
 
     /**
-     * Creates a new CrystalRewardToken instance.
+     * Creates a new CurrencyRewardToken instance.
      *
      * @param clientID the clientID receiving the crystals
      * @param count the number of crystals the player is receiving
      * @param reason the reason the player is receiving the crystals
      * @param callback the callback that will be called when the player received the crystals
      */
-    public CrystalRewardToken(int clientID, int count, String reason, Callback<Boolean> callback)
+    public CurrencyRewardToken(int clientID, int count, String reason, Callback<Boolean> callback)
     {
         _clientID = clientID;
         _count = count;

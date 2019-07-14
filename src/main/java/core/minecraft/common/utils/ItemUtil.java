@@ -66,6 +66,11 @@ public class ItemUtil {
         }
     }
 
+    /**
+     * Adds a dummy glow enchantment to the given ItemStack.
+     *
+     * @param itemStack the inventory that is receiving the glow enchantment
+     */
     public static void addItemGlow(ItemStack itemStack)
     {
         if (_glowEnchantment != null)

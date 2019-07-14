@@ -1,6 +1,7 @@
 package core.minecraft.world;
 
 import core.minecraft.Component;
+import core.minecraft.command.CommandManager;
 import core.minecraft.common.utils.FileUtil;
 import core.minecraft.world.config.MapConfig;
 import org.bukkit.*;
@@ -36,10 +37,11 @@ public class WorldManager extends Component implements Listener {
      * This creates a new Component with the given name under plugin.
      *
      * @param plugin the main JavaPlugin instance
+     * @param commandManager the main CommandManager instance
      */
-    public WorldManager(JavaPlugin plugin)
+    public WorldManager(JavaPlugin plugin, CommandManager commandManager)
     {
-        super("World", plugin);
+        super("World", plugin, commandManager);
         _mapContainer = new File(Bukkit.getWorldContainer().getPath() + File.pathSeparator + "maps");
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
 

@@ -13,6 +13,7 @@ public abstract class Component {
 
     private String _name;
     private JavaPlugin _plugin;
+    private CommandManager _commandManager;
 
     /**
      * This creates a new Component with the given name under plugin.
@@ -20,10 +21,11 @@ public abstract class Component {
      * @param name the name of the new component
      * @param plugin the main JavaPlugin instance
      */
-    public Component(String name, JavaPlugin plugin)
+    public Component(String name, JavaPlugin plugin, CommandManager commandManager)
     {
         _name = name;
         _plugin = plugin;
+        _commandManager = commandManager;
     }
 
     /**
@@ -33,7 +35,7 @@ public abstract class Component {
      */
     public void addCommand(CommandInstance command)
     {
-        CommandManager.getInstance().addCommand(command);
+        _commandManager.addCommand(command);
     }
 
     /**
@@ -43,7 +45,7 @@ public abstract class Component {
      */
     public void removeCommand(CommandInstance command)
     {
-        CommandManager.getInstance().removeCommand(command);
+        _commandManager.removeCommand(command);
     }
 
     /**

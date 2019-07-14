@@ -1,4 +1,4 @@
-package core.minecraft.region;
+package core.minecraft.region.type;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -44,7 +44,7 @@ public class MultiRegion extends Region {
     }
 
     /**
-     * Removes a subregion to this MultiRegion
+     * Removes the subregion from this MultiRegion
      *
      * @param region The region being removed from this MultiRegion
      */

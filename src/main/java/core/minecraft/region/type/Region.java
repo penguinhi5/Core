@@ -1,4 +1,4 @@
-package core.minecraft.region;
+package core.minecraft.region.type;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -47,6 +47,11 @@ public abstract class Region {
 
     /**
      * Creates a new default region.
+     *
+     * @param flags all of the flags that are applied to the region
+     * @param name the name of the region
+     * @param id the unique ID used to identify the region
+     * @param world the world this region exists in
      */
     public Region(List<String> flags, String name, String id, World world)
     {

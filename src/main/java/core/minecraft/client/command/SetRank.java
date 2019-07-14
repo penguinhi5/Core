@@ -16,7 +16,9 @@ import java.util.UUID;
  *
  * @author Preston Brown
  */
-public class SetRank extends CommandBase<ClientManager> {
+public class SetRank extends CommandBase {
+
+    private ClientManager _clientManager;
 
     /**
      * Creates a new instance of the SetRank command with the provide {@link ClientManager}.
@@ -25,7 +27,8 @@ public class SetRank extends CommandBase<ClientManager> {
      */
     public SetRank(ClientManager plugin)
     {
-        super(plugin, plugin, "setrank", new String[] {"updaterank"}, Rank.ADMIN);
+        super(plugin, "setrank", new String[] {"updaterank"}, Rank.ADMIN);
+        _clientManager = plugin;
     }
 
     @Override
@@ -54,12 +57,12 @@ public class SetRank extends CommandBase<ClientManager> {
         // You can only set rank less than or equal to your own
         if (callerRank.compareTo(newRank) <= 0)
         {
-            UUID uuid = _plugin.getRepository().getUUIDFromName(name);
+            UUID uuid = _clientManager.getRepository().getUUIDFromName(name);
             if (uuid == null)
             {
                 caller.sendMessage(F.componentMessage("Command", "Player " + name + " does not exist"));
                 //TODO this is to test this set of features but change this to just say caller doesn't exist
-                List<String> matchingNames = _plugin.getRepository().getMatchingPlayers(name);
+                List<String> matchingNames = _clientManager.getRepository().getMatchingPlayers(name);
                 PlayerUtil.findExactMatch(caller, name, matchingNames, true);
                 return;
             }
@@ -67,13 +70,13 @@ public class SetRank extends CommandBase<ClientManager> {
             boolean updated;
             if (newRank.isPurchased())
             {
-                updated = _plugin.getRepository().updatePurchasedRank(uuid.toString(), newRank);
-                _plugin.getRepository().updateRank(uuid.toString(), Rank.DEFAULT);
+                updated = _clientManager.getRepository().updatePurchasedRank(uuid.toString(), newRank);
+                _clientManager.getRepository().updateRank(uuid.toString(), Rank.DEFAULT);
 
             }
             else
             {
-                updated = _plugin.getRepository().updateRank(uuid.toString(), newRank);
+                updated = _clientManager.getRepository().updateRank(uuid.toString(), newRank);
             }
 
             if (updated)
@@ -87,12 +90,12 @@ public class SetRank extends CommandBase<ClientManager> {
                 {
                     if (newRank.isPurchased())
                     {
-                        _plugin.getPlayerData(player).setPurchasedRank(newRank);
-                        _plugin.getPlayerData(player).setRank(Rank.DEFAULT);
+                        _clientManager.getPlayerData(player).setPurchasedRank(newRank);
+                        _clientManager.getPlayerData(player).setRank(Rank.DEFAULT);
                     }
                     else
                     {
-                        _plugin.getPlayerData(player).setRank(newRank);
+                        _clientManager.getPlayerData(player).setRank(newRank);
                     }
                     player.sendMessage(F.componentMessage("Rank", "Your rank has been updated to " + newRank.getDisplayName(false, true, true) + F.C_CONTENT + "."));
                 }

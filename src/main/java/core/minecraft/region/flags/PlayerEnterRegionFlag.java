@@ -1,15 +1,10 @@
 package core.minecraft.region.flags;
 
-import core.minecraft.region.Region;
+import core.minecraft.region.type.Region;
 import core.minecraft.region.RegionManager;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-
-import java.util.HashMap;
-import java.util.LinkedList;
 
 /**
  * This flag listens for players entering a region.

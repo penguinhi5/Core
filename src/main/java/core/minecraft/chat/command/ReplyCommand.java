@@ -14,11 +14,14 @@ import org.bukkit.entity.Player;
  *
  * @author Preston Brown
  */
-public class ReplyCommand extends CommandBase<ChatManager> {
+public class ReplyCommand extends CommandBase {
+
+    private ChatManager _chatManager;
 
     public ReplyCommand(ChatManager chatManager, ClientManager clientManager)
     {
-        super(chatManager, clientManager, "reply", new String[] {"r"}, Rank.DEFAULT);
+        super(clientManager, "reply", new String[] {"r"}, Rank.DEFAULT);
+        _chatManager = chatManager;
     }
 
 
@@ -31,7 +34,7 @@ public class ReplyCommand extends CommandBase<ChatManager> {
             return;
         }
 
-        String receiverName = _plugin.getLastMessage(player.getName());
+        String receiverName = _chatManager.getLastMessage(player.getName());
         if (receiverName.equals(""))
         {
             player.sendMessage(F.componentMessage("Message", "You haven't messaged anyone yet"));

@@ -20,31 +20,19 @@ import java.util.HashMap;
  */
 public class CommandManager implements Listener {
 
-    private static CommandManager _instance;
     private static JavaPlugin _plugin;
     private HashMap<String, CommandInstance> _commands;
 
     /**
-     * Initializes the CommandManager
+     * Creates a new instance of CommandManager.
+     *
+     * @param plugin The main JavaPlugin instance.
      */
-    public static void initialize(JavaPlugin plugin)
-    {
-        _instance = new CommandManager(plugin);
-        _plugin.getServer().getPluginManager().registerEvents(_instance, _plugin);
-    }
-
-    private CommandManager(JavaPlugin plugin)
+    public CommandManager(JavaPlugin plugin)
     {
         _plugin = plugin;
         _commands = new HashMap<>();
-    }
-
-    /**
-     * @return an instance of CommandManager
-     */
-    public static CommandManager getInstance()
-    {
-        return _instance;
+        _plugin.getServer().getPluginManager().registerEvents(this, _plugin);
     }
 
     @EventHandler

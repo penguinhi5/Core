@@ -1,6 +1,7 @@
 package core.minecraft.timer;
 
 import core.minecraft.Component;
+import core.minecraft.command.CommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,10 +18,11 @@ public class Timer extends Component {
      * Creates a new instance of Timer.
      *
      * @param plugin the main JavaPlugin instance
+     * @param commandManager the main CommandManager instance
      */
-    public Timer(JavaPlugin plugin)
+    public Timer(JavaPlugin plugin, CommandManager commandManager)
     {
-        super("Timer", plugin);
+        super("Timer", plugin, commandManager);
         runnable = new TimerRunnable(this);
     }
 

@@ -5,6 +5,7 @@ import core.minecraft.chat.command.MessageCommand;
 import core.minecraft.chat.command.ReplyCommand;
 import core.minecraft.chat.command.MuteCommand;
 import core.minecraft.client.ClientManager;
+import core.minecraft.command.CommandManager;
 import core.minecraft.common.F;
 import core.minecraft.common.Rank;
 import core.minecraft.common.utils.SystemUtil;
@@ -40,9 +41,9 @@ public class ChatManager extends Component implements Listener {
      *
      * @param plugin the main JavaPlugin instance
      */
-    public ChatManager(JavaPlugin plugin, ClientManager clientManager)
+    public ChatManager(JavaPlugin plugin, ClientManager clientManager, CommandManager commandManager)
     {
-        super("Chat", plugin);
+        super("Chat", plugin, commandManager);
         _clientManager = clientManager;
         addCommands();
 
@@ -187,7 +188,7 @@ public class ChatManager extends Component implements Listener {
 
         for (String player : _messageHistory.keySet())
         {
-            if (Bukkit.getOnlinePlayers().contains(player))
+            if (!Bukkit.getOnlinePlayers().contains(player))
             {
                 _messageHistory.remove(player);
             }

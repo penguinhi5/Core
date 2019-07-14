@@ -9,15 +9,17 @@ public class BungeeProxy implements RedisData {
 
     private String _publicIP;
     private int _port;
-    private int _ram;
+    private long _maxRam;
+    private long _freeRam;
     private int _playerCount;
 
-    public BungeeProxy(String publicIP, int port, int ram, int playerCount)
+    public BungeeProxy(String publicIP, int port, long maxRam, long freeRam, int playerCount)
     {
         _publicIP = publicIP;
         _port = port;
-        _ram = ram;
-        _playerCount = playerCount;
+        _maxRam = maxRam;
+        _freeRam = freeRam;
+        _playerCount = playerCount;Runtime.getRuntime().availableProcessors();
     }
 
     public String getPublicIP() {
@@ -28,8 +30,13 @@ public class BungeeProxy implements RedisData {
         return _port;
     }
 
-    public int getRam() {
-        return _ram;
+    public long getMaxRam() {
+        return _maxRam;
+    }
+
+    public long getFreeRam()
+    {
+        return _freeRam;
     }
 
     public int getPlayerCount() {

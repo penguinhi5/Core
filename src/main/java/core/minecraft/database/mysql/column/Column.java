@@ -42,7 +42,7 @@ public abstract class Column<DataType> {
     }
 
     /**
-     * Updates the location in the preparedStatment with the stored peice of data.
+     * Updates the location in the preparedStatement with the stored piece of data.
      *
      * @param preparedStatement the prepared statement that is being updated
      * @param location the location that the stored data should be placed

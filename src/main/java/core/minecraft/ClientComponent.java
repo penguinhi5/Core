@@ -1,5 +1,6 @@
 package core.minecraft;
 
+import core.minecraft.command.CommandManager;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,17 +22,19 @@ public abstract class ClientComponent<PlayerData> extends Component {
      *
      * @param name the name of the component
      * @param plugin the main JavaPlugin instance
+     * @param commandManager the main CommandManager instance
      */
-    public ClientComponent(String name, JavaPlugin plugin)
+    public ClientComponent(String name, JavaPlugin plugin, CommandManager commandManager)
     {
-        super(name, plugin);
+        super(name, plugin, commandManager);
     }
 
     /**
-     * Gets the playerdata of the player with the given name.
+     * Gets the playerdata of the player with the given name. If no player is currently online with that name
+     * null is returned.
      *
      * @param playerName the name of the player that we are getting the PlayerData of
-     * @return the PlayerData object the belongs to playerName
+     * @return the PlayerData object the belongs to playerName, null if the player is not currently online
      */
     public PlayerData getPlayerData(String playerName)
     {
@@ -44,10 +47,10 @@ public abstract class ClientComponent<PlayerData> extends Component {
     }
 
     /**
-     * Gets the playerdata of the given player.
+     * Gets the playerdata of the given player. If the player is not currently online null is returned.
      *
      * @param player the player that we are getting the PlayerData of
-     * @return the PlayerData object the belongs to player
+     * @return the PlayerData object the belongs to player, null if the player is not currently online
      */
     public PlayerData getPlayerData(Player player)
     {
@@ -74,7 +77,7 @@ public abstract class ClientComponent<PlayerData> extends Component {
     }
 
     /**
-     * Removes the player with the given playerName from storage.
+     * Removes the player with the given playerName from storage if it exists.
      *
      * @param playerName the name of the player whose player data is being removed
      */

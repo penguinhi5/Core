@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
  *
  * @author Preston Brown
  */
-public class ClientRedisRepository extends DataRepositoryBase<RedisClient> implements Listener {
+public class ClientRedisRepository extends DataRepositoryBase<RedisClient> {
 
     /**
      * This creates a new {@link ClientRedisRepository} instance.
@@ -25,7 +25,7 @@ public class ClientRedisRepository extends DataRepositoryBase<RedisClient> imple
      */
     public void playerJoin(RedisClient client)
     {
-        addData(client, 86400000L);
+        addData(client);
     }
 
     /**

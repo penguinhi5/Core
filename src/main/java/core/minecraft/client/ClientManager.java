@@ -6,6 +6,7 @@ import core.minecraft.client.data.Client;
 import core.minecraft.client.redis.RedisClient;
 import core.minecraft.client.redis.ClientRedisRepository;
 import core.minecraft.client.repository.ClientSQLRepository;
+import core.minecraft.command.CommandManager;
 import core.minecraft.common.Rank;
 import core.minecraft.database.mysql.Row;
 import core.minecraft.server.ServerManager;
@@ -41,10 +42,12 @@ public class ClientManager extends ClientComponent<Client> implements Listener {
      * This creates a new instance of ClientManager using the specified {@link JavaPlugin}.
      *
      * @param plugin the main {@link JavaPlugin} instance
+     * @param serverConfiguration the main ServerManager instance
+     * @param commandManager the main CommandManager instance
      */
-    public ClientManager(JavaPlugin plugin, ServerManager serverConfiguration)
+    public ClientManager(JavaPlugin plugin, ServerManager serverConfiguration, CommandManager commandManager)
     {
-        super("Client Manager", plugin);
+        super("Client Manager", plugin, commandManager);
         _sqlRepository = new ClientSQLRepository();
         _redisRepository = new ClientRedisRepository();
         _serverConfiguration = serverConfiguration;
@@ -184,7 +187,7 @@ public class ClientManager extends ClientComponent<Client> implements Listener {
     /**
      * Initializes all of the commands
      */
-    public void addCommands()
+    private void addCommands()
     {
         addCommand(new SetRank(this));
     }

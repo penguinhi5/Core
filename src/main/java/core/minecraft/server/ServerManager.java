@@ -1,6 +1,7 @@
 package core.minecraft.server;
 
 import core.minecraft.Component;
+import core.minecraft.command.CommandManager;
 import core.minecraft.timer.TimerType;
 import core.minecraft.timer.event.TimerEvent;
 import core.redis.connection.RedisManager;
@@ -29,15 +30,27 @@ public class ServerManager extends Component implements Listener {
     private String _serverName;
     private String _publicIP;
 
-    public ServerManager(JavaPlugin plugin)
+    /**
+     * Creates a new ServerManager instance.
+     *
+     * @param plugin The main JavaPlugin instance
+     * @param commandManager the main CommandManager instance
+     */
+    public ServerManager(JavaPlugin plugin, CommandManager commandManager)
     {
-        super("Server", plugin);
+        super("Server", plugin, commandManager);
+
+        // Gets the redis server repository that stores the live data of every server
         _serverRepository = RedisManager.getInstance().getServerRepository();
+
+        // Ensures a config exists
         generateConfig();
 
+        // Gets the server name and type
         _serverName = getPlugin().getConfig().getString("servermanager.name");
         _serverTypeName = getPlugin().getConfig().getString("servermanager.type");
 
+        // Gets the public IP
         try
         {
             URL stream = new URL("http://checkip.amazonaws.com");
@@ -50,6 +63,7 @@ public class ServerManager extends Component implements Listener {
             e.printStackTrace();
         }
 
+        // Gets the server type
         Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
 
             @Override
@@ -59,9 +73,15 @@ public class ServerManager extends Component implements Listener {
             }
         });
 
+        // Begin to upload live server data to Redis
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
     }
 
+    /**
+     * Generates a default config if one does not already exist.
+     *
+     * If a config file doesn't already exist the server is assumed to be a test server.
+     */
     private void generateConfig()
     {
         getPlugin().getConfig().addDefault("servermanager.name", "Test-1");
@@ -73,6 +93,10 @@ public class ServerManager extends Component implements Listener {
         getPlugin().saveConfig();
     }
 
+    /**
+     * Updates the {@link MinecraftServer} data stored on Redis pertaining to
+     * this server instance on a regular interval.
+     */
     @EventHandler
     public void updateEvent(TimerEvent event)
     {
@@ -92,6 +116,11 @@ public class ServerManager extends Component implements Listener {
         });
     }
 
+    /**
+     * Generates a snapshot of this MinecraftServer instance.
+     *
+     * @return the snapshot of this MinecraftServer instance
+     */
     public MinecraftServer generateServer()
     {
         String publicIP = Bukkit.getIp() == null ? _publicIP : Bukkit.getIp();
@@ -106,6 +135,9 @@ public class ServerManager extends Component implements Listener {
         return server;
     }
 
+    /**
+     * @return the public name of this MinecraftServer
+     */
     public String getServerName()
     {
         return _serverName;

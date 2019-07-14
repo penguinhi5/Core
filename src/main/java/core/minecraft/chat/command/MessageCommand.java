@@ -14,11 +14,14 @@ import org.bukkit.entity.Player;
  *
  * @author Preston Brown
  */
-public class MessageCommand extends CommandBase<ChatManager> {
+public class MessageCommand extends CommandBase {
+
+    private ChatManager _chatManager;
 
     public MessageCommand(ChatManager chatManager, ClientManager clientManager)
     {
-        super(chatManager, clientManager, "message", new String[] {"msg"}, Rank.DEFAULT);
+        super(clientManager, "message", new String[] {"msg"}, Rank.DEFAULT);
+        _chatManager = chatManager;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class MessageCommand extends CommandBase<ChatManager> {
                 stringBuilder.append(args[i] + " ");
             }
             receiver.sendMessage(stringBuilder.toString());
-            _plugin.updateMessageHistory(player.getName(), receiver.getName());
+            _chatManager.updateMessageHistory(player.getName(), receiver.getName());
         }
         else
         {

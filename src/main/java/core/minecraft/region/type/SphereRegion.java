@@ -1,4 +1,4 @@
-package core.minecraft.region;
+package core.minecraft.region.type;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -6,7 +6,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

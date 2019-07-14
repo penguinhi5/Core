@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public abstract class DataRepositoryBase<T extends RedisData> implements DataRepository<T> {
 
-    protected final long DEFAULT_TIMEOUT = 86400000L;
+    protected final int DEFAULT_TIMEOUT = 86400;
     protected String _dataName;
     private Class<T> _classType;
 
@@ -28,11 +28,20 @@ public abstract class DataRepositoryBase<T extends RedisData> implements DataRep
         _classType = classType;
     }
 
+    /**
+     * Creates the key used to store the data object with the specified nameID.
+     *
+     * @param nameID the name ID of the object
+     * @return the key used to store the data object
+     */
     protected String getKey(String nameID)
     {
         return "data." + _dataName + "." + nameID;
     }
 
+    /**
+     * @return the zkey used to store the data object
+     */
     protected String getZKey()
     {
         return "data.z" + _dataName;
@@ -90,7 +99,7 @@ public abstract class DataRepositoryBase<T extends RedisData> implements DataRep
     }
 
     @Override
-    public void addData(T data, long timeout)
+    public void addData(T data, int timeout)
     {
         Jedis jedis = null;
         String ID = data.getNameID().toLowerCase();
@@ -100,7 +109,7 @@ public abstract class DataRepositoryBase<T extends RedisData> implements DataRep
             String serializedData = serializeData(data);
             Transaction transaction = jedis.multi();
             transaction.set(getKey(ID), serializedData);
-            transaction.zadd(getZKey(), System.currentTimeMillis() + timeout, ID);
+            transaction.expire(getKey(ID), timeout);
             transaction.exec();
         }
         catch (Exception e)
@@ -141,7 +150,6 @@ public abstract class DataRepositoryBase<T extends RedisData> implements DataRep
             jedis = RedisManager.getMasterConnection();
             Transaction transaction = jedis.multi();
             transaction.del(getKey(ID));
-            transaction.zrem(getZKey(), ID);
             transaction.exec();
         }
         catch (Exception e)
@@ -207,117 +215,6 @@ public abstract class DataRepositoryBase<T extends RedisData> implements DataRep
         }
         System.out.println("[Redis-DataRepositoryBase] \'" + _dataName + "\' executed exists(String nameID)");
         return exists;
-    }
-
-    @Override
-    public int cleanData()
-    {
-        Jedis jedis = null;
-        int removeCount = 0;
-        try
-        {
-            jedis = RedisManager.getMasterConnection();
-            Transaction transaction = jedis.multi();
-            Response<Long> response = transaction.zremrangeByScore(getZKey(), "(" + System.currentTimeMillis(), "+inf");
-            transaction.exec();
-
-            removeCount = Integer.parseInt(response.get().toString());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            if (jedis != null)
-            {
-                try
-                {
-                    jedis.close();
-                }
-                catch (JedisException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return removeCount;
-    }
-
-    @Override
-    public List<T> getLivingData()
-    {
-        Jedis jedis = null;
-        List<T> livingData = new LinkedList<>();
-        try
-        {
-            jedis = RedisManager.getMasterConnection();
-            Pipeline pipeline = jedis.pipelined();
-            Response<Set<String>> response = pipeline.zrangeByScore(getZKey(), "-inf", "(" + System.currentTimeMillis());
-            pipeline.sync();
-
-            for (String data : response.get())
-            {
-                livingData.add(deserializeData(data));
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            if (jedis != null)
-            {
-                try
-                {
-                    jedis.close();
-                }
-                catch (JedisException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return livingData;
-    }
-
-    @Override
-    public List<T> getDeceasedData()
-    {
-        Jedis jedis = null;
-        List<T> deceasedData = new LinkedList<>();
-        try
-        {
-            jedis = RedisManager.getMasterConnection();
-            Pipeline pipeline = jedis.pipelined();
-            Response<Set<String>> response = pipeline.zrangeByScore(getZKey(), "(" + System.currentTimeMillis(), "+inf");
-            pipeline.sync();
-
-            for (String data : response.get())
-            {
-                deceasedData.add(deserializeData(data));
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            if (jedis != null)
-            {
-                try
-                {
-                    jedis.close();
-                }
-                catch (JedisException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return deceasedData;
     }
 
     /**

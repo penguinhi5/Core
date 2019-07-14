@@ -20,9 +20,9 @@ public interface Button {
     public void onClick(Player whoClicked, ClickType clickType);
 
     /**
-     * Gets the item that will be shown to the player in the gui that represents this button.
+     * Gets the inventory that will be shown to the player in the gui that represents this button.
      *
-     * @return the item that represents this button
+     * @return the inventory that represents this button
      */
     public ItemStack getItem();
 }

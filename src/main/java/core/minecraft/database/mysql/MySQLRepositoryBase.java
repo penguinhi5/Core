@@ -37,7 +37,7 @@ public abstract class MySQLRepositoryBase {
     }
 
     /**
-     * Executes the query that will be updating the database and executes the call with the generated keys.
+     * Executes the query that will be updating the database and executes the handleCommand with the generated keys.
      * If there are any values that must be replaced in the prepared statement they must be
      * entered in chronological order within the columns parameter.
      *
@@ -109,12 +109,12 @@ public abstract class MySQLRepositoryBase {
     }
 
     /**
-     * Executes the query and then uses the ResultSet to run the call.
+     * Executes the query and then uses the ResultSet to run the handleCommand.
      * If there are any values that must be replaced in the prepared statement they must be
      * entered in chronological order within the columns parameter.
      *
      * @param query the query that will be ran
-     * @param callable the call
+     * @param callable the handleCommand
      * @return the {@link ResultSet} returned from the query
      */
     protected void executeQuery(String query, ResultSetCallable callable, Column[] columns)
@@ -159,12 +159,12 @@ public abstract class MySQLRepositoryBase {
     }
 
     /**
-     * Executes the PreparedStatement and then uses the ResultSet to call call.
+     * Executes the PreparedStatement and then uses the ResultSet to handleCommand handleCommand.
      * If there are any values that must be replaced in the prepared statement they must be
      * entered in chronological order within the columns parameter.
      *
      * @param preparedStatement the PreparedStatement that will be ran
-     * @param callable the call
+     * @param callable the handleCommand
      * @return the {@link ResultSet} returned from the query
      */
     protected void executeQuery(PreparedStatement preparedStatement, ResultSetCallable callable, Column[] columns)

@@ -2,10 +2,12 @@ package core.minecraft.shop.pages;
 
 import core.minecraft.common.Callback;
 import core.minecraft.gui.button.Button;
-import core.minecraft.gui.button.DummyBtn;
+import core.minecraft.gui.button.DummyButton;
 import core.minecraft.gui.page.PageBase;
 import core.minecraft.shop.ShopManager;
 import core.minecraft.shop.packages.SalesItem;
+import core.minecraft.transaction.TransactionManager;
+import core.minecraft.transaction.TransactionResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -55,7 +57,7 @@ public class ConfirmationPage extends PageBase implements Runnable{
         backgroundItem.setItemMeta(backgroundItemMeta);
         for (int i = 0; i <= 44; i++)
         {
-            addButton(i, new DummyBtn(backgroundItem));
+            addButton(i, new DummyButton(backgroundItem));
         }
 
         for (int i = 45; i <= 53; i++)
@@ -68,7 +70,7 @@ public class ConfirmationPage extends PageBase implements Runnable{
         addButton(27 + random.nextInt(9), new ConfirmButton());
         addButton(36 + random.nextInt(9), new ConfirmButton());
 
-        addButton(13, new DummyBtn(_salesItem.getItem()));
+        addButton(13, new DummyButton(_salesItem.getItem()));
     }
 
     /**
@@ -85,19 +87,20 @@ public class ConfirmationPage extends PageBase implements Runnable{
         ItemStack background = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)10);
         for (int i = 0; i <= 53; i++)
         {
-            addButton(i, new DummyBtn(background));
+            addButton(i, new DummyButton(background));
         }
         _taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(_salesManager.getPlugin(), this, 0, 2);
 
-        _salesItem.getSalesPackage().purchaseSalesPackageForPlayer(_owner, new Callback<Boolean>() {
+        _salesItem.getSalesPackage().purchaseSalesPackageForPlayer(_owner, new Callback<TransactionResponse>() {
             @Override
-            public Boolean call(Boolean callback)
+            public TransactionResponse call(TransactionResponse callback)
             {
                 Bukkit.getScheduler().cancelTask(_taskID);
                 clearPage();
 
-                if (callback)
+                if (callback == TransactionResponse.SUCCESSFUL)
                 {
+                    System.out.println("PURCHASED item - " + _salesItem.getClass().getName() + " for player - " + _owner);
                     updateName("Purchase Successful");
                     _owner.playSound(_owner.getLocation(), Sound.NOTE_PLING, 1F, 2F);
                     for (int i = 0; i <= 53; i++)
@@ -107,6 +110,7 @@ public class ConfirmationPage extends PageBase implements Runnable{
                 }
                 else
                 {
+                    System.out.println("FAILED to purchase item - " + _salesItem.getClass().getName() + " for player - " + _owner);
                     updateName("Purchase Failed");
                     _owner.playSound(_owner.getLocation(), Sound.FIREWORK_BLAST, 1F, 1F);
                     for (int i = 0; i <= 53; i++)
@@ -136,7 +140,7 @@ public class ConfirmationPage extends PageBase implements Runnable{
         line.setItemMeta(itemMeta);
         for (int i = 9 * _row; i < 9 * _row + 9; i++)
         {
-            addButton(i, new DummyBtn(background));
+            addButton(i, new DummyButton(background));
         }
         if (_row >= 5)
         {
@@ -148,7 +152,7 @@ public class ConfirmationPage extends PageBase implements Runnable{
         }
         for (int i = 9 * _row; i < 9 * _row + 9; i++)
         {
-            addButton(i, new DummyBtn(line));
+            addButton(i, new DummyButton(line));
         }
     }
 

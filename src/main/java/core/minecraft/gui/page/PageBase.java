@@ -3,6 +3,7 @@ package core.minecraft.gui.page;
 import core.minecraft.gui.GUIManager;
 import core.minecraft.gui.button.Button;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -38,10 +39,10 @@ public abstract class PageBase {
     public abstract void buildPage();
 
     /**
-     * This is ran when an item in this inventory has been clicked.
+     * This is ran when an inventory in this inventory has been clicked.
      *
      * @param slot the slot that was clicked
-     * @param item the item that was clicked
+     * @param item the inventory that was clicked
      * @param clickType the type of click
      */
     public void onClick(int slot, ItemStack item, ClickType clickType)
@@ -72,32 +73,26 @@ public abstract class PageBase {
     public void removeButton(int slot)
     {
         _buttonMap.remove(slot);
-    }
-
-    /**
-     * Removes the specified button from the inventory if it exists.
-     *
-     * @param button the button that is being removed
-     */
-    public void removeButton(Button button)
-    {
-        if (_buttonMap.containsValue(button))
-        {
-            _buttonMap.values().remove(button);
-            _inventory.remove(button.getItem());
-        }
+        _inventory.setItem(slot, new ItemStack(Material.AIR));
     }
 
     /**
      * Updates the name of the inventory.
+     * If the inventory is currently open the inventory will be reopened with the new name.
      *
      * @param name the new name of the inventory
      */
     public void updateName(String name)
     {
+        boolean isInventoryOpen = _guiManager.getCurrentlyOpenedPageForPlayer(_owner).equals(_inventory.getName());
         _inventory = Bukkit.createInventory(null, 54, name);
-        _owner.closeInventory();
-        _guiManager.openPageForPlayer(_owner, this);
+
+        // If the inventory is currently open the inventory is reopened so the new name will be displayed
+        if (isInventoryOpen)
+        {
+            _owner.closeInventory();
+            _guiManager.openPageForPlayer(this);
+        }
     }
 
     /**
@@ -118,6 +113,16 @@ public abstract class PageBase {
     public String getInventoryName()
     {
         return _inventory.getName();
+    }
+
+    /**
+     * Returns the owner of this page.
+     *
+     * @return the owner of this page
+     */
+    public Player getOwner()
+    {
+        return _owner;
     }
 
     /**

@@ -1,4 +1,4 @@
-package core.minecraft.region;
+package core.minecraft.region.type;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -36,30 +35,28 @@ public class ChunkRegion extends Region {
 
         for (Chunk chunk : chunks)
         {
-            addChunk(chunk.getX(), chunk.getZ());
+            addChunk(chunk);
         }
     }
 
     /**
-     * Adds the specified chunk to the region.
+     * Adds the chunk at the specified chunk grid position to the region.
      *
-     * @param x The x coordinate of this chunk
-     * @param z The z coordinate of this chunk
+     * @param chunk the chunk being added
      */
-    public void addChunk(int x, int z)
+    public void addChunk(Chunk chunk)
     {
-        chunks.add(x + "," + z);
+        chunks.add(chunk.getX() + "," + chunk.getZ());
     }
 
     /**
-     * Removes the chunk at the specified location from the region.
+     * Removes the chunk at the specified chunk grid position from the region.
      *
-     * @param x The x coordinate of this chunk
-     * @param z The z coordinate of this chunk
+     * @param chunk The chunk being removed
      */
-    public void removeChunk(int x, int z)
+    public void removeChunk(Chunk chunk)
     {
-        chunks.remove(x + "," + z);
+        chunks.remove(chunk.getX() + "," + chunk.getZ());
     }
 
     @Override

@@ -14,20 +14,23 @@ import org.bukkit.entity.Player;
  *
  * @author Preston Brown
  */
-public class MuteCommand extends CommandBase<ChatManager> {
+public class MuteCommand extends CommandBase {
+
+    private ChatManager _chatManager;
 
     public MuteCommand(ChatManager chatManager, ClientManager clientManager)
     {
-        super(chatManager, clientManager, "mute", new String[] {}, Rank.SENIOR_MOD);
+        super(clientManager, "mute", new String[] {}, Rank.SENIOR_MOD);
+        _chatManager = chatManager;
     }
 
     @Override
     public void execute(Player player, String[] args)
     {
-        if (_plugin.isChatSilenced())
+        if (_chatManager.isChatSilenced())
         {
             Bukkit.broadcastMessage(F.componentMessage("Chat", "Chat is no longer muted"));
-            _plugin.unsilenceChat();
+            _chatManager.unsilenceChat();
         }
         else
         {
@@ -38,7 +41,7 @@ public class MuteCommand extends CommandBase<ChatManager> {
             }
             else if (args.length < 1)
             {
-                _plugin.silenceChat(-1L);
+                _chatManager.silenceChat(-1L);
                 Bukkit.broadcastMessage(F.componentMessage("Chat", "Chat has been muted " + F.C_EMPHASIS + "forever"));
                 return;
             }
@@ -46,7 +49,7 @@ public class MuteCommand extends CommandBase<ChatManager> {
             try
             {
                 silenceTime = Long.parseLong(args[0]) * 1000;
-                _plugin.silenceChat(silenceTime);
+                _chatManager.silenceChat(silenceTime);
                 Bukkit.broadcastMessage(F.componentMessage("Chat", "Chat has been muted for " + F.C_EMPHASIS + SystemUtil.getWrittenTimeRemaining(silenceTime)));
             }
             catch (NumberFormatException e)

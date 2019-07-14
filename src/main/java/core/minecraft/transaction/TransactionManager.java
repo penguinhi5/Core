@@ -2,68 +2,59 @@ package core.minecraft.transaction;
 
 import core.minecraft.ClientComponent;
 import core.minecraft.client.ClientManager;
+import core.minecraft.client.data.Client;
+import core.minecraft.command.CommandManager;
 import core.minecraft.common.Callback;
-import core.minecraft.item.ItemManager;
-import core.minecraft.timer.TimerType;
-import core.minecraft.timer.event.TimerEvent;
-import core.minecraft.transaction.data.CrystalRewardToken;
-import core.minecraft.transaction.data.PlayerTransactions;
+import core.minecraft.common.CurrencyType;
+import core.minecraft.transaction.data.CurrencyRewardToken;
+import core.minecraft.transaction.data.PlayerWallet;
 import core.minecraft.transaction.mysql.TransactionRepository;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
 /**
- * Manages all of the item and currency transactions.
+ * Manages all of the inventory and currency transactions.
  *
  * @author Preston Brown
  */
-public class TransactionManager extends ClientComponent<PlayerTransactions> implements Listener {
+public class TransactionManager extends ClientComponent<PlayerWallet> implements Listener {
 
+    private Object _lock = new Object();
     private TransactionRepository _repository;
     private ClientManager _clientManager;
-    private LinkedList<CrystalRewardToken> _rewardCrystalQueue = new LinkedList<>();
+    private HashMap<String, CurrencyRewardToken> _rewardCrystalQueue = new HashMap<>();
 
     /**
      * This creates a new {@link TransactionManager} instance.
      *
      * @param plugin the main JavaPlugin instance
+     * @param commandManager the main CommandManager instance
      */
-    public TransactionManager(JavaPlugin plugin, ClientManager clientManager)
+    public TransactionManager(JavaPlugin plugin, ClientManager clientManager, CommandManager commandManager)
     {
-        super("Transaction", plugin);
+        super("Transaction", plugin, commandManager);
         _clientManager = clientManager;
         _repository = new TransactionRepository(this, _clientManager.getRepository());
 
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
     }
 
+    /**
+     * Gets the amount of every currency a player has when they join the server.
+     */
     @EventHandler
-    public void onPlayerLogin(PlayerLoginEvent event)
+    public void onPlayerJoin(PlayerJoinEvent event)
     {
-        Player player = event.getPlayer();
-        int clientID = _clientManager.getPlayerData(player).getClientID();
-        Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
-            @Override
-            public void run()
-            {
-                PlayerTransactions playerTransactions = _repository.onPlayerLogin(clientID, player.getName());
-                if (playerTransactions == null)
-                {
-                    event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "There was an issue loading your player data. Please relog.");
-                }
-                else
-                {
-                    setPlayerData(player.getName(), playerTransactions);
-                }
-            }
-        });
+        HashMap<CurrencyType, Integer> playerCurrencies =
+                _repository.onPlayerLogin(_clientManager.getPlayerData(event.getPlayer()).getClientID());
+
+        setPlayerData(event.getPlayer().getName(), new PlayerWallet(event.getPlayer().getName(), playerCurrencies));
     }
 
     @EventHandler
@@ -73,182 +64,134 @@ public class TransactionManager extends ClientComponent<PlayerTransactions> impl
     }
 
     /**
-     * Asynchronously processes the purchase of the item for the specified player.
+     * Gets the balance the player currently has of the specified CurrencyType. If there is no player online with
+     * that name -1 will be returned.
      *
-     * @param clientID the player that is receiving the item
-     * @param itemID the id of the item the player is purchasing
-     * @param cost the price of the item being purchased
-     * @param quantity the quantity that is being purchased, if you want to lower the quantity that must be done in
-     *                 the {@link ItemManager}
-     * @param oneTimePurchase true if this item can only be purchased once, otherwise false
-     * @param callback this callback will be called with the resulting TransactionResponse
+     * @param currencyType the type of currency
+     * @param player the player being checked
+     * @return the amount of currency the specified player has, if no player is currently online with that name -1 is returned
      */
-    public void purchaseCosmeticItem(int clientID, String playerName, int itemID, String itemName, int quantity, int cost, boolean oneTimePurchase, Callback<TransactionResponse> callback)
+    public int getPlayerBalance(CurrencyType currencyType, String player)
     {
-        Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
-            @Override
-            public void run()
-            {
-                _repository.processCosmeticTransaction(clientID, itemID, cost, quantity, oneTimePurchase, new Callback<TransactionResponse>() {
-                    @Override
-                    public TransactionResponse call(TransactionResponse transactionCallback)
-                    {
-                        if (transactionCallback == TransactionResponse.SUCCESSFUL)
-                        {
-                            getPlayerData(playerName).removeCrystals(cost);
-                            getPlayerData(playerName).purchasedCosmeticItem(itemName, quantity);
-                        }
-                        callback.call(transactionCallback);
-                        return transactionCallback;
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Asynchronously processes the transaction created from the specified data. This is used for purchasing items that
-     * are not cosmetics.
-     *
-     * @param clientID the clientID of the player purchasing the item
-     * @param name the name of the item being purchased
-     * @param quantity the quantity that is being purchased, if you want to lower the quantity that must be done in
-     *                 the {@link ItemManager}
-     * @param cost the number of crystals being removed from the player's balance
-     * @param oneTimePurchase true if this is a one time purchase, otherwise false
-     * @param callback this callback will be called with the resulting TransactionResponse
-     */
-    public void purchaseOtherItem(int clientID, String playerName, String name, int quantity, int cost, boolean oneTimePurchase, Callback<TransactionResponse> callback)
-    {
-        Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
-            @Override
-            public void run()
-            {
-                _repository.processOtherTransaction(clientID, name, quantity, cost, oneTimePurchase, new Callback<TransactionResponse>() {
-                    @Override
-                    public TransactionResponse call(TransactionResponse transactionCallback)
-                    {
-                        if (transactionCallback == TransactionResponse.SUCCESSFUL)
-                        {
-                            getPlayerData(playerName).removeCrystals(cost);
-                            getPlayerData(playerName).purchasedOtherItem(name, quantity);
-                        }
-                        callback.call(transactionCallback);
-                        return transactionCallback;
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Asynchronously executes the transaction by removes the specified number of crystals from the players balance.
-     *
-     * @param playerName the name of the player making the purchase
-     * @param cost the number of crystals being removed from the player's balance
-     * @param reason the reason for the transaction
-     * @param callback this will call true if the transaction was successful, otherwise false
-     */
-    public void processCrystalTransaction(String playerName, int cost, String reason, Callback<Boolean> callback)
-    {
-        int clientID = _clientManager.getPlayerData(playerName).getClientID();
-        Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
-            @Override
-            public void run()
-            {
-                _repository.processCrystalTransaction(clientID, cost, reason, new Callback<Boolean>() {
-                    @Override
-                    public Boolean call(Boolean transactionCallback)
-                    {
-                        if (transactionCallback)
-                        {
-                            getPlayerData(playerName).removeCrystals(cost);
-                        }
-                        callback.call(transactionCallback);
-                        return transactionCallback;
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Asynchronously rewards the player with the specified number of crystals.
-     *
-     * @param playerName the player that will be receiving these crystals
-     * @param count the number of crystals the player is receiving
-     * @param reason the reason the player is receiving these crystals
-     * @param callback runs the Callback with the value true if the crystals were successfully rewarded, otherwise false
-     */
-    public void rewardCrystals(String playerName, int count, String reason, Callback<Boolean> callback)
-    {
-        int clientID = _clientManager.getRepository().getClientIdFromName(playerName);
-        if (clientID == -1)
+        if (getPlayerData(player) == null)
         {
-            callback.call(false);
+            return -1;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
-            @Override
-            public void run()
-            {
-                _repository.rewardCrystals(clientID, count, reason, new Callback<Boolean>() {
-                    @Override
-                    public Boolean call(Boolean transactionCallback) {
-                        if (transactionCallback)
-                        {
-                            getPlayerData(playerName).rewardCrystals(count);
-                        }
-                        callback.call(transactionCallback);
-                        return transactionCallback;
-                    }
-                });
-            }
-        });
+        return getPlayerData(player).getCurrency(currencyType);
     }
 
     /**
-     * Asynchronously rewards the player with the specified number of crystals after a short delay. This should be used if a large
-     * amount of players are expected to be rewarded crystals within a short period of time.
+     * Asynchronously adds the specified amount of the currency to the player's balance. If the player is not
+     * currently online the item quantity will not be updated.
      *
-     * @param playerName the player that will be receiving these crystals
-     * @param count the number of crystals the player is receiving
-     * @param reason the reason the player is receiving these crystals
-     * @param callback runs the Callback with the value true if the crystals were successfully rewarded, otherwise false
+     * @param playerName the name of the player making the purchase
+     * @param count the change in the player's currency count
+     * @param reason the reason for the transaction
      */
-    public void rewardCrystalsDelayed(String playerName, int count, String reason, Callback<Boolean> callback)
+    public void processCurrencyTransaction(String playerName, CurrencyType currencyType, int count, String reason)
     {
+        Client client = _clientManager.getPlayerData(playerName);
+
+        // Ensures the player is currently online
+        if (client == null)
+        {
+            return;
+        }
+
         int clientID = _clientManager.getPlayerData(playerName).getClientID();
-        CrystalRewardToken crystalRewardToken = new CrystalRewardToken(clientID, count, reason, new Callback<Boolean>() {
+
+        // Processes the transaction
+        processOfflinePlayerCurrencyTransaction(new Callback<Boolean>() {
             @Override
             public Boolean call(Boolean transactionCallback)
             {
                 if (transactionCallback)
                 {
-                    getPlayerData(playerName).rewardCrystals(count);
+                    getPlayerData(playerName).addCurrency(currencyType, count);
+                }
+                return transactionCallback;
+            }
+        }, clientID, currencyType, count, reason);
+    }
+
+    /**
+     * Asynchronously adds the specified amount of the currency to the player's balance. If the player is not
+     * currently online the item quantity will not be updated.
+     *
+     * <p>
+     * The callback will call true if the update was successful, otherwise false will be called if it failed.
+     * </p>
+     *
+     * @param callback this will call true if the transaction was successful, otherwise false
+     * @param playerName the name of the player making the purchase
+     * @param currencyType the {@Link CurrencyType} being added to the player's balance
+     * @param count the change in the player's currency count
+     * @param reason the reason for the transaction
+     */
+    public void processCurrencyTransaction(Callback<Boolean> callback, String playerName, CurrencyType currencyType, int count, String reason)
+    {
+        Client client = _clientManager.getPlayerData(playerName);
+
+        // Ensures the player is currently online
+        if (client == null)
+        {
+            callback.call(false);
+            return;
+        }
+
+        int clientID = _clientManager.getPlayerData(playerName).getClientID();
+
+        // Processes the transaction
+        processOfflinePlayerCurrencyTransaction(new Callback<Boolean>() {
+            @Override
+            public Boolean call(Boolean transactionCallback)
+            {
+                if (transactionCallback)
+                {
+                    getPlayerData(playerName).addCurrency(currencyType, count);
                 }
                 callback.call(transactionCallback);
                 return transactionCallback;
             }
-        });
-        _rewardCrystalQueue.addLast(crystalRewardToken);
+        }, clientID, currencyType, count, reason);
     }
 
-    @EventHandler
-    public void processCrystalRewardQueue(TimerEvent event)
+    /**
+     * Asynchronously adds the specified amount of the currency to the offline player's balance.
+     *
+     * <p>
+     *     This method should only be used when the player is offline because the change will not be shown live
+     * on the server. You should also ensure that the player is not currently online on the network if you are
+     * removing from the player's balance in order to prevent the player from spending money they don't have.
+     *</p>
+     *
+     * The callback will call true if the update was successful, otherwise false will be called if it failed.
+     *
+     * @param callback this will call true if the transaction was successful, otherwise false
+     * @param clientID the clientID of the player making the purchase
+     * @param currencyType the {@Link CurrencyType} being added to the player's balance
+     * @param count the amount of currency being added to the player's balance
+     * @param reason the reason for the transaction
+     */
+    public void processOfflinePlayerCurrencyTransaction(Callback<Boolean> callback, int clientID, CurrencyType currencyType, int count, String reason)
     {
-        if (event.getType() != TimerType.MINUTE || _rewardCrystalQueue.size() <= 0)
+        synchronized (_lock)
         {
-            return;
+            Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
+                @Override
+                public void run()
+                {
+                    _repository.processCurrencyTransaction(clientID, currencyType, count, reason, new Callback<Boolean>() {
+                        @Override
+                        public Boolean call(Boolean transactionCallback)
+                        {
+                            callback.call(transactionCallback);
+                            return transactionCallback;
+                        }
+                    });
+                }
+            });
         }
-
-        Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
-            @Override
-            public void run()
-            {
-                Iterator<CrystalRewardToken> tokenIterator = _rewardCrystalQueue.iterator();
-                _repository.rewardCrystalsDelayed(tokenIterator);
-            }
-        });
     }
 }
