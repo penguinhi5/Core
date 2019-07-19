@@ -120,7 +120,7 @@ public class WorldManager extends Component implements Listener {
     }
 
     /**
-     * Unloads the world with the specified name.
+     * Unloads the world with the specified name and deletes the world directory.
      *
      * @return true if the world was unloaded, otherwise false
      */
@@ -248,6 +248,13 @@ public class WorldManager extends Component implements Listener {
         return false;
     }
 
+    /**
+     * Updates the weather in the specified map.
+     *
+     * @param map teh name of the map
+     * @param weatherType the new time
+     * @return true if the weather was successfully updated, otherwise false
+     */
     public boolean setMapWeather(String map, WeatherType weatherType)
     {
         if (_loadedWorlds.contains(map))
@@ -285,7 +292,9 @@ public class WorldManager extends Component implements Listener {
     }
 
     /**
-     * Teleports the player to the given map
+     * Teleports the player to the given map at one of the locations assigned to the team.
+     * If no team exists with the team name the player will not be teleported and false
+     * will be returned.
      *
      * @param player the player being teleported
      * @param mapConfig the MapConfig of the world the player is being teleported to
@@ -293,6 +302,10 @@ public class WorldManager extends Component implements Listener {
      */
     public boolean teleportPlayerToMap(Player player, String team, MapConfig mapConfig)
     {
+        // Returns false if the team doesn't exist
+        if (!mapConfig.getSpawnMap().keySet().contains(team))
+            return false;
+
         List<Location> locations = mapConfig.getTeamSpawnLocations(team);
 
         // Teleports the player
@@ -304,6 +317,14 @@ public class WorldManager extends Component implements Listener {
         return false;
     }
 
+    /**
+     * Teleports the player to the active map at one of the locations assigned to the team.
+     * If no team exists with the team name the player will not be teleported and false
+     * will be returned.
+     *
+     * @param player the player being teleported
+     * @return true if the player was successfully teleported, otherwise false
+     */
     public boolean teleportPlayerToActiveMap(Player player, String team)
     {
         List<Location> locations = _activeMap.getTeamSpawnLocations(team);
@@ -320,8 +341,12 @@ public class WorldManager extends Component implements Listener {
     /**
      * Teleports all of the players to the given map so every player spawns at a different spawn point. If there
      * isn't enough spawn points for every player there will be some spawn points with multiple players.
+     * If no team exists with the team name the player will not be teleported and false
+     * will be returned.
      *
      * @param mapConfig the MapConfig of the world the player is being teleported to
+     * @param players the players being teleported
+     * @return true if the player was successfully teleported, otherwise false
      */
     public boolean teleportAllPlayersToMap(List<Player> players, String team, MapConfig mapConfig)
     {
@@ -342,8 +367,13 @@ public class WorldManager extends Component implements Listener {
     }
 
     /**
-     * Teleports all of the players to the given map so every player spawns at a different spawn point. If there
+     * Teleports all of the players to the active map so every player spawns at a different spawn point. If there
      * isn't enough spawn points for every player there will be some spawn points with multiple players.
+     * If no team exists with the team name the player will not be teleported and false
+     * will be returned.
+     *
+     * @param players the players being teleported
+     * @return true if the player was successfully teleported, otherwise false
      */
     public boolean teleportAllPlayersToActiveMap(List<Player> players, String team)
     {

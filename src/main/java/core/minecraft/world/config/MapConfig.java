@@ -176,7 +176,7 @@ public class MapConfig {
     }
 
     /**
-     * Gets the path to this world's directory
+     * Gets the path to this world's directory.
      *
      * @return the relative path to this world's directory
      */
