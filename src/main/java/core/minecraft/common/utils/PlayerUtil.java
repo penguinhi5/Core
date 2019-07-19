@@ -1,9 +1,13 @@
 package core.minecraft.common.utils;
 
 import core.minecraft.common.F;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,9 +54,10 @@ public class PlayerUtil implements PluginMessageListener {
      *
      * @param player the player that is being killed
      */
-    public static void killPlayer(Player player)
+    public static void killPlayer(Player player, String causeOfDeath)
     {
-        //TODO
+        player.sendMessage("Consider yourself killed by " + causeOfDeath);
+        //TODO Handle deaths in damage component
     }
 
     @Override

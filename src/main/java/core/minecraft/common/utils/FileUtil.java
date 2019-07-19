@@ -1,7 +1,12 @@
 package core.minecraft.common.utils;
 
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+
 import java.io.*;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -19,26 +24,10 @@ public class FileUtil {
      * @param destination the location that the zip file should be extracted to
      * @throws IOException
      */
-    public static void unzipFile(String path, String destination) throws IOException
+    public static void unzipFile(String path, String destination) throws ZipException
     {
-        byte[] buffer = new byte[1024];
-        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(path));
-        ZipEntry zipEntry = zipInputStream.getNextEntry();
-        while (zipEntry != null)
-        {
-            String fileName = zipEntry.getName();
-            File newFile = new File(destination + "/" + fileName);
-            FileOutputStream fileOutputStream = new FileOutputStream(newFile);
-            int len;
-            while ((len = zipInputStream.read(buffer)) > 0)
-            {
-                fileOutputStream.write(buffer, 0, len);
-            }
-            fileOutputStream.close();
-            zipEntry = zipInputStream.getNextEntry();
-        }
-        zipInputStream.closeEntry();
-        zipInputStream.close();
+        ZipFile zipFile = new ZipFile(path);
+        zipFile.extractAll(destination);
     }
 
     /**
@@ -92,5 +81,38 @@ public class FileUtil {
             }
         }
         file.delete();
+    }
+
+    /**
+     * Returns a list containing all of the files found inside of the directory provided and
+     * all of its child directories.
+     *
+     * <p>If the file provided is not a directory an empty list will be returned.</p>
+     *
+     * @param file the directory being searched
+     * @return a list containing all of the files found in the directory and its children
+     */
+    public static List<File> getFileContents(File file)
+    {
+        if (file == null || !file.exists() || !file.isDirectory())
+        {
+            return new ArrayList<>();
+        }
+
+        // Collects all of the files
+        ArrayList<File> files = new ArrayList<>();
+        File[] contents = file.listFiles();
+        for (File fileL : contents)
+        {
+            if (fileL.isDirectory())
+            {
+                files.addAll(getFileContents(fileL));
+            }
+            else
+            {
+                files.add(fileL);
+            }
+        }
+        return files;
     }
 }

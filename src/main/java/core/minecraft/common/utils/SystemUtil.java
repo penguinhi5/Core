@@ -49,15 +49,15 @@ public class SystemUtil {
         }
         else if (minutes == 1)
         {
-            stringBuilder.append(minutes + "minute ");
+            stringBuilder.append(minutes + " minute ");
         }
         if (seconds > 1)
         {
-            stringBuilder.append(seconds + "seconds ");
+            stringBuilder.append(seconds + " seconds ");
         }
         else if (seconds == 1)
         {
-            stringBuilder.append(seconds + "second ");
+            stringBuilder.append(seconds + " second ");
         }
         return stringBuilder.toString().trim();
     }

@@ -27,17 +27,16 @@ public class MapConfig {
     private String _name, _author;
     private MapType _mapType;
 
-    public MapConfig(String worldDirectory, World world, MapType type)
+    public MapConfig(String worldDirectory, World world)
     {
         _worldDirectory = worldDirectory;
         _world = world;
-        _mapType = type;
         readConfig();
     }
 
-    public void readConfig()
+    private void readConfig()
     {
-        _file = new File(_worldDirectory);
+        _file = new File(_worldDirectory + File.separator + "config.yml");
         if (_file.exists())
         {
             try
@@ -45,29 +44,32 @@ public class MapConfig {
                 _config = new YamlConfiguration();
                 _config.load(_file);
 
+                // Gets the map type
+                _mapType = MapType.valueOf(_config.getString("map_type"));
+
                 // World borders
-                _minX = _config.getInt("_minX");
+                _minX = _config.getInt("minX");
                 if (_minX == 0)
                 {
                     _minX = -256;
                 }
-                _maxX = _config.getInt("_maxX");
+                _maxX = _config.getInt("maxX");
                 if (_maxX == 0)
                 {
                     _maxX = 256;
                 }
-                _minY = _config.getInt("_minY");
-                _maxY = _config.getInt("_maxY");
+                _minY = _config.getInt("minY");
+                _maxY = _config.getInt("maxY");
                 if (_maxY == 0)
                 {
                     _maxY = 256;
                 }
-                _minZ = _config.getInt("_minZ");
+                _minZ = _config.getInt("minZ");
                 if (_minZ == 0)
                 {
                     _minZ = -256;
                 }
-                _maxZ = _config.getInt("_maxZ");
+                _maxZ = _config.getInt("maxZ");
                 if (_maxZ == 0)
                 {
                     _maxZ = 256;
@@ -83,7 +85,7 @@ public class MapConfig {
                 _author = _config.getString("author");
                 if (_author == null)
                 {
-                    _author = "that one guy";
+                    _author = "that one girl";
                     System.out.println("Failed to parse map author from mapconfig directory " + _worldDirectory);
                 }
 
@@ -116,22 +118,8 @@ public class MapConfig {
         else
         {
             System.out.println("Failed to read mapconfig at path " + _worldDirectory);
+            System.out.println(_world.getWorldFolder().getAbsolutePath() + File.pathSeparatorChar + "config.yml");
         }
-    }
-
-    /**
-     * Returns a list containing all of the spawn locations for the given team.
-     *
-     * @param team the name of the team
-     * @return a list containing all of the spawn locations
-     */
-    public List<Location> getTeamSpawnLocations(String team)
-    {
-        if (_spawnMap.containsKey(team))
-        {
-            return _spawnMap.get(team);
-        }
-        return new ArrayList<>();
     }
 
     /**
@@ -245,23 +233,22 @@ public class MapConfig {
      */
     public HashMap<String, List<Location>> getSpawnMap()
     {
-        return _spawnMap;
+        return new HashMap<>(_spawnMap);
     }
 
     /**
-     * Gets a List containing all of the spawn locations for the specified team. If no team exists with the given
-     * name, null is returned.
+     * Returns a list containing all of the spawn locations for the given team.
      *
-     * @param team the team you are getting the spawn locations of
-     * @return all of the spawn locations for the specified team if the team exists, otherwise null
+     * @param team the name of the team
+     * @return a list containing all of the spawn locations
      */
-    public List<Location> getTeamSpawns(String team)
+    public List<Location> getTeamSpawnLocations(String team)
     {
-        if (_spawnMap.containsKey(team.toLowerCase()))
+        if (_spawnMap.containsKey(team))
         {
-            return _spawnMap.get(team.toLowerCase());
+            return _spawnMap.get(team);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
