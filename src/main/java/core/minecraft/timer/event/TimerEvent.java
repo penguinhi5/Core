@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * This event is called when one of the {@link TimerType}s reaches a milestone.
+ * This events is called when one of the {@link TimerType}s reaches a milestone.
  *
  * @author Preston Brown
  */
@@ -25,7 +25,7 @@ public class TimerEvent extends Event {
     }
 
     /**
-     * @return the {@link TimerType} that was called in the event
+     * @return the {@link TimerType} that was called in the events
      */
     public TimerType getType()
     {

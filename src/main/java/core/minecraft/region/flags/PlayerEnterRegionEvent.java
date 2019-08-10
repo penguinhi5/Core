@@ -3,7 +3,7 @@ package core.minecraft.region.flags;
 import org.bukkit.entity.Player;
 
 /**
- * This event is called when a player enters a region with the PlayerEnterRegionFlag.
+ * This events is called when a player enters a region with the PlayerEnterRegionFlag.
  */
 public class PlayerEnterRegionEvent extends BaseRegionFlagTriggerEvent {
 
@@ -25,7 +25,7 @@ public class PlayerEnterRegionEvent extends BaseRegionFlagTriggerEvent {
     }
 
     /**
-     * @return the player that triggered the event
+     * @return the player that triggered the events
      */
     public Player getPlayer()
     {

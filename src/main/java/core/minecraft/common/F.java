@@ -14,7 +14,10 @@ public class F {
     public static final String C_PREFIX = ChatColor.GOLD.toString();
     public static final String C_ERROR_PREFIX = ChatColor.DARK_RED.toString();
     public static final String C_CONTENT = ChatColor.GRAY.toString();
-    public static final String C_EMPHASIS = ChatColor.WHITE.toString();
+    public static final String C_EMPHASIS1 = ChatColor.WHITE.toString();
+    public static final String C_EMPHASIS2 = ChatColor.GREEN.toString();
+    public static final String C_SKILL = ChatColor.BLUE.toString();
+    public static final String C_PLAYER_EMPHASIS = ChatColor.YELLOW.toString();
 
     /**
      * Generates a message that will be sent by a component in the proper format
@@ -65,8 +68,8 @@ public class F {
      */
     public static String properCommandUsageMessage(String usage, String example)
     {
-        String msg = C_PREFIX + "[" + "Command" + "] " + C_CONTENT + "Proper Usage: " + C_EMPHASIS + usage + C_CONTENT + ".\n" +
-                C_PREFIX + "[" + "Command" + "] " + C_CONTENT + "Example: " + C_EMPHASIS + example + C_CONTENT + ".";
+        String msg = C_PREFIX + "[" + "Command" + "] " + C_CONTENT + "Proper Usage: " + C_EMPHASIS1 + usage + C_CONTENT + ".\n" +
+                C_PREFIX + "[" + "Command" + "] " + C_CONTENT + "Example: " + C_EMPHASIS1 + example + C_CONTENT + ".";
         return msg;
     }
 }

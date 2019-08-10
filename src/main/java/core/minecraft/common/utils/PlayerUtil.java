@@ -2,6 +2,7 @@ package core.minecraft.common.utils;
 
 import core.minecraft.common.F;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
@@ -62,6 +63,12 @@ public class PlayerUtil implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String s, Player player, byte[] bytes) {
+
+    }
+
+    public void getArmorValue(Player player, LivingEntity livingEntity)
+    {
+        player.getInventory().getArmorContents();
 
     }
 }

@@ -82,7 +82,7 @@ public class SetRank extends CommandBase {
             if (updated)
             {
                 caller.sendMessage(F.componentMessage("Command",
-                        F.C_EMPHASIS + name + F.C_CONTENT + "'s rank was successfully updated to " + newRank.getDisplayName(false, true, true) + F.C_CONTENT + ".")
+                        F.C_EMPHASIS1 + name + F.C_CONTENT + "'s rank was successfully updated to " + newRank.getDisplayName(false, true, true) + F.C_CONTENT + ".")
                 );
 
                 Player player;
@@ -102,7 +102,7 @@ public class SetRank extends CommandBase {
             }
             else
             {
-                caller.sendMessage(F.componentMessage("Command", "There was an error updating " + F.C_EMPHASIS + name + F.C_CONTENT + "'s rank."));
+                caller.sendMessage(F.componentMessage("Command", "There was an error updating " + F.C_EMPHASIS1 + name + F.C_CONTENT + "'s rank."));
             }
         }
         else

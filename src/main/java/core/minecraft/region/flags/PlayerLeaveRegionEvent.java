@@ -3,7 +3,7 @@ package core.minecraft.region.flags;
 import org.bukkit.entity.Player;
 
 /**
- * This event is called when a player leaves a region with the {@Link PlayerLeaveRegionFlag}.
+ * This events is called when a player leaves a region with the {@Link PlayerLeaveRegionFlag}.
  */
 public class PlayerLeaveRegionEvent extends BaseRegionFlagTriggerEvent {
 
@@ -25,7 +25,7 @@ public class PlayerLeaveRegionEvent extends BaseRegionFlagTriggerEvent {
     }
 
     /**
-     * @return the player that triggered the event
+     * @return the player that triggered the events
      */
     public Player getPlayer()
     {

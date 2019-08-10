@@ -62,13 +62,13 @@ public class ChatManager extends Component implements Listener {
         {
             if (_permSilenced)
             {
-                speaker.sendMessage(F.componentMessage("Chat", "Chat is muted " + F.C_EMPHASIS + "forever"));
+                speaker.sendMessage(F.componentMessage("Chat", "Chat is muted " + F.C_EMPHASIS1 + "forever"));
                 event.setCancelled(true);
                 return;
             }
             else if (silencedTime > 0)
             {
-                speaker.sendMessage(F.componentMessage("Chat", "Chat is muted for " + F.C_EMPHASIS + SystemUtil.getWrittenTimeRemaining(silencedTime)));
+                speaker.sendMessage(F.componentMessage("Chat", "Chat is muted for " + F.C_EMPHASIS1 + SystemUtil.getWrittenTimeRemaining(silencedTime)));
                 event.setCancelled(true);
                 return;
             }

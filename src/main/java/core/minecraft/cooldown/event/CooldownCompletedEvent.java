@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * This event is executed when a cooldown is completed.
+ * This events is executed when a cooldown is completed.
  *
  * @author Preston Brown
  */

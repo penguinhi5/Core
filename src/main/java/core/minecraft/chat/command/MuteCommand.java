@@ -42,7 +42,7 @@ public class MuteCommand extends CommandBase {
             else if (args.length < 1)
             {
                 _chatManager.silenceChat(-1L);
-                Bukkit.broadcastMessage(F.componentMessage("Chat", "Chat has been muted " + F.C_EMPHASIS + "forever"));
+                Bukkit.broadcastMessage(F.componentMessage("Chat", "Chat has been muted " + F.C_EMPHASIS1 + "forever"));
                 return;
             }
             long silenceTime;
@@ -50,7 +50,7 @@ public class MuteCommand extends CommandBase {
             {
                 silenceTime = Long.parseLong(args[0]) * 1000;
                 _chatManager.silenceChat(silenceTime);
-                Bukkit.broadcastMessage(F.componentMessage("Chat", "Chat has been muted for " + F.C_EMPHASIS + SystemUtil.getWrittenTimeRemaining(silenceTime)));
+                Bukkit.broadcastMessage(F.componentMessage("Chat", "Chat has been muted for " + F.C_EMPHASIS1 + SystemUtil.getWrittenTimeRemaining(silenceTime)));
             }
             catch (NumberFormatException e)
             {

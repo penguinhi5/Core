@@ -27,7 +27,7 @@ public enum TimerType {
     }
 
     /**
-     * Updates the time of the specified type of timer. If enough time has passed an event
+     * Updates the time of the specified type of timer. If enough time has passed an events
      * of the specified TimerType will be called.
      *
      * @param type the TimerType that is being updated

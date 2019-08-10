@@ -6,9 +6,9 @@ import org.bukkit.event.HandlerList;
 /**
  * Created by Preston on 6/14/2019.
  *
- * This event should be called when a flag has been triggered within a region.
+ * This events should be called when a flag has been triggered within a region.
  *
- * When you listen for this event you should check to ensure the event has been called
+ * When you listen for this events you should check to ensure the events has been called
  * on the appropriate region.
  */
 public abstract class BaseRegionFlagTriggerEvent extends Event {

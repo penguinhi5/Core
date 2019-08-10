@@ -1,5 +1,7 @@
 package core.minecraft.common.utils;
 
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
@@ -79,5 +81,30 @@ public class ItemUtil {
             itemMeta.addEnchant(_glowEnchantment, 1, true);
             itemStack.setItemMeta(itemMeta);
         }
+    }
+
+    /**
+     * Returns the display name of the ItemStack.
+     *
+     * If the item stack is null, null will be returned.
+     *
+     * @param item the ItemStack being analyzed
+     * @return the display name of the item if it is not null, otherwise null will be returned
+     */
+    public static String getItemDisplayName(ItemStack item)
+    {
+        if (item == null)
+        {
+            return null;
+        }
+
+        // Returns the item's display name if the item has a custom name
+        if (item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null)
+        {
+            return item.getItemMeta().getDisplayName();
+        }
+
+        // Returns the name of the item if it doesn't have a custom name
+        return WordUtils.capitalize(item.getType().name().replace('_', ' ').toLowerCase());
     }
 }
