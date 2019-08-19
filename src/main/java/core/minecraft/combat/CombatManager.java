@@ -25,19 +25,28 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 
 /**
- * Created by MOTPe on 8/6/2019.
+ * Stores the combat history for all of the players on the server.
  */
 public class CombatManager extends Component implements Listener {
 
     private HashMap<Player, CombatLog> _combatLogs = new HashMap<>();
     private HashMap<String, CombatClient> _combatClients = new HashMap<>();
 
+    /**
+     * Creates a new CombatManager instance.
+     *
+     * @param plugin the main JavaPlugin instance
+     * @param commandManager the CommandManager instance
+     */
     public CombatManager(JavaPlugin plugin, CommandManager commandManager)
     {
         super("Combat", plugin, commandManager);
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
     }
 
+    /**
+     * Logs the damage applied by the EntityDamageEvent.
+     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void logDamage(EntityDamageEvent event)
     {
@@ -58,109 +67,130 @@ public class CombatManager extends Component implements Listener {
         {
             if (damager instanceof Player)
             {
-                getCombatLog((Player)event.getEntity()).addAttack(((Player)damager).getName(), damager, "Attack", event.getDamage());
+                Player damagerP = (Player)damager;
+                ItemStack hand = damagerP.getItemInHand();
+
+                // Customizes the source with the item used to damage the player
+                if (hand == null || hand.getType() == Material.AIR) // If the player was damaged with fists
+                {
+                    getCombatLog((Player)event.getEntity()).addAttack(damager.getName(), damager, "Fists", event.getFinalDamage());
+                }
+                else if (event.getCause() == DamageCause.PROJECTILE && hand.getType() == Material.BOW) // If the damager used archery
+                {
+                    getCombatLog((Player)event.getEntity()).addAttack(damager.getName(), damager, "Archery", event.getFinalDamage());
+                }
+                else // If the damager has an item in their hand
+                {
+                    getCombatLog((Player)event.getEntity()).addAttack(damager.getName(), damager, ItemUtil.getItemDisplayName(hand), event.getFinalDamage());
+                }
             }
-            getCombatLog((Player)event.getEntity()).addAttack(damager.getName(), damager, null, event.getDamage());
+            else // The player was killed by a mob
+            {
+                getCombatLog((Player)event.getEntity()).addAttack(damager.getName(), damager, null, event.getFinalDamage());
+            }
         }
         else // If the player wasn't damaged by an entity
         {
-            String damage = "-";
             String source = "-";
+            String reason = "-";
 
             if (event.getCause() == DamageCause.BLOCK_EXPLOSION)
             {
-                damage = "Explosion";
+                source = "Explosion";
             }
             else if (event.getCause() == DamageCause.CONTACT)
             {
-                damage = "Cactus";
+                source = "Cactus";
             }
             else if (event.getCause() == DamageCause.CUSTOM)
             {
-                damage = "Custom Damage";
+                source = "Custom Damage";
             }
             else if (event.getCause() == DamageCause.DROWNING)
             {
-                damage = "Drowning";
+                source = "Drowning";
             }
             else if (event.getCause() == DamageCause.ENTITY_ATTACK)
             {
-                damage = "Entity";
-                source = "Attack";
+                source = "Entity";
+                reason = "Attack";
             }
             else if (event.getCause() == DamageCause.ENTITY_EXPLOSION)
             {
-                damage = "Explosion";
+                source = "Explosion";
             }
             else if (event.getCause() == DamageCause.FALL)
             {
-                damage = "Gravity";
+                source = "Gravity";
             }
             else if (event.getCause() == DamageCause.FALLING_BLOCK)
             {
-                damage = "Falling Block";
+                source = "Falling Block";
             }
             else if (event.getCause() == DamageCause.FIRE)
             {
-                damage = "Fire";
+                source = "Fire";
             }
             else if (event.getCause() == DamageCause.FIRE_TICK)
             {
-                damage = "Fire";
+                source = "Fire";
             }
             else if (event.getCause() == DamageCause.LAVA)
             {
-                damage = "Lava";
+                source = "Lava";
             }
             else if (event.getCause() == DamageCause.LIGHTNING)
             {
-                damage = "Zeus";
+                source = "Zeus";
             }
             else if (event.getCause() == DamageCause.MAGIC)
             {
-                damage = "Witchcraft";
+                source = "Witchcraft";
             }
             else if (event.getCause() == DamageCause.MELTING)
             {
-                damage = "Becoming a happy snowman";
+                source = "Becoming a happy snowman";
             }
             else if (event.getCause() == DamageCause.POISON)
             {
-                damage = "Poison";
+                source = "Poison";
             }
             else if (event.getCause() == DamageCause.PROJECTILE)
             {
-                damage = "Projectile";
+                source = "Projectile";
             }
             else if (event.getCause() == DamageCause.STARVATION)
             {
-                damage = "Starvation";
+                source = "Starvation";
             }
             else if (event.getCause() == DamageCause.SUFFOCATION)
             {
-                damage = "Suffocation";
+                source = "Suffocation";
             }
             else if (event.getCause() == DamageCause.SUICIDE)
             {
-                damage = "Suicide";
+                source = "Suicide";
             }
             else if (event.getCause() == DamageCause.THORNS)
             {
-                damage = "Thorns";
+                source = "Thorns";
             }
             else if (event.getCause() == DamageCause.VOID)
             {
-                damage = "Void";
+                source = "Void";
             }
             else if (event.getCause() == DamageCause.WITHER)
             {
-                damage = "Wither";
+                source = "Wither";
             }
 
-            getCombatLog((Player)event.getEntity()).addAttack(damage, null, source, event.getFinalDamage());
+            getCombatLog((Player)event.getEntity()).addAttack(source, null, reason, event.getFinalDamage());
         }
     }
 
+    /**
+     * Logs the damage caused by the CustomDamageEvent.
+     */
     public void logDamage(CustomDamageEvent event)
     {
         if (event.getPlayerDamagee() == null || event.isCancelled())
@@ -182,6 +212,10 @@ public class CombatManager extends Component implements Listener {
                 {
                     getCombatLog(event.getPlayerDamagee()).addAttack(damager.getName(), damager, "Fists", event.getDamage());
                 }
+                else if (event.getDamageCause() == DamageCause.PROJECTILE && hand.getType() == Material.BOW) // If the damager used archery
+                {
+                    getCombatLog(event.getPlayerDamagee()).addAttack(damager.getName(), damager, "Archery", event.getDamage());
+                }
                 else // If the damager has an item in their hand
                 {
                     getCombatLog(event.getPlayerDamagee()).addAttack(damager.getName(), damager, ItemUtil.getItemDisplayName(hand), event.getDamage());
@@ -194,103 +228,106 @@ public class CombatManager extends Component implements Listener {
         }
         else // If the player wasn't damaged by an entity
         {
-            String damage = "-";
             String source = "-";
+            String reason = "-";
 
             if (event.getDamageCause() == DamageCause.BLOCK_EXPLOSION)
             {
-                damage = "Explosion";
+                source = "Explosion";
             }
             else if (event.getDamageCause() == DamageCause.CONTACT)
             {
-                damage = "Cactus";
+                source = "Cactus";
             }
             else if (event.getDamageCause() == DamageCause.CUSTOM)
             {
-                damage = "Custom Damage";
+                source = "Custom Damage";
             }
             else if (event.getDamageCause() == DamageCause.DROWNING)
             {
-                damage = "Drowning";
+                source = "Drowning";
             }
             else if (event.getDamageCause() == DamageCause.ENTITY_ATTACK)
             {
-                damage = "Entity";
-                source = "Attack";
+                source = "Entity";
+                reason = "Attack";
             }
             else if (event.getDamageCause() == DamageCause.ENTITY_EXPLOSION)
             {
-                damage = "Explosion";
+                source = "Explosion";
             }
             else if (event.getDamageCause() == DamageCause.FALL)
             {
-                damage = "Gravity";
+                source = "Gravity";
             }
             else if (event.getDamageCause() == DamageCause.FALLING_BLOCK)
             {
-                damage = "Falling Block";
+                source = "Falling Block";
             }
             else if (event.getDamageCause() == DamageCause.FIRE)
             {
-                damage = "Fire";
+                source = "Fire";
             }
             else if (event.getDamageCause() == DamageCause.FIRE_TICK)
             {
-                damage = "Fire";
+                source = "Fire";
             }
             else if (event.getDamageCause() == DamageCause.LAVA)
             {
-                damage = "Lava";
+                source = "Lava";
             }
             else if (event.getDamageCause() == DamageCause.LIGHTNING)
             {
-                damage = "Zeus";
+                source = "Zeus";
             }
             else if (event.getDamageCause() == DamageCause.MAGIC)
             {
-                damage = "Witchcraft";
+                source = "Witchcraft";
             }
             else if (event.getDamageCause() == DamageCause.MELTING)
             {
-                damage = "Becoming a happy snowman";
+                source = "Becoming a happy snowman";
             }
             else if (event.getDamageCause() == DamageCause.POISON)
             {
-                damage = "Poison";
+                source = "Poison";
             }
             else if (event.getDamageCause() == DamageCause.PROJECTILE)
             {
-                damage = "Projectile";
+                source = "Projectile";
             }
             else if (event.getDamageCause() == DamageCause.STARVATION)
             {
-                damage = "Starvation";
+                source = "Starvation";
             }
             else if (event.getDamageCause() == DamageCause.SUFFOCATION)
             {
-                damage = "Suffocation";
+                source = "Suffocation";
             }
             else if (event.getDamageCause() == DamageCause.SUICIDE)
             {
-                damage = "Suicide";
+                source = "Suicide";
             }
             else if (event.getDamageCause() == DamageCause.THORNS)
             {
-                damage = "Thorns";
+                source = "Thorns";
             }
             else if (event.getDamageCause() == DamageCause.VOID)
             {
-                damage = "Void";
+                source = "Void";
             }
             else if (event.getDamageCause() == DamageCause.WITHER)
             {
-                damage = "Wither";
+                source = "Wither";
             }
 
-            getCombatLog(event.getPlayerDamagee()).addAttack(damage, null, source, event.getDamage());
+            getCombatLog(event.getPlayerDamagee()).addAttack(source, null, reason, event.getDamage());
         }
     }
 
+    /**
+     * Displays the death message in chat when the player dies.
+     */
     @EventHandler
     public void displayDeathMessage(PlayerDeathEvent event)
     {
@@ -313,21 +350,31 @@ public class CombatManager extends Component implements Listener {
         {
             Bukkit.broadcastMessage(log.getSimpleDeathMessage());
         }
+        else if (messageEvent.getDeathMessageType() == DeathMessageType.VICTIM_AND_KILLER_ONLY)
+        {
+            for (Player player : Bukkit.getOnlinePlayers())
+            {
+                if (player.getName().equals(messageEvent.getKiller()) || player.getName().equals(messageEvent.getPlayer().getName()))
+                {
+                    player.sendMessage(log.getSimpleDeathMessage());
+                }
+            }
+        }
         else if (messageEvent.getDeathMessageType() == DeathMessageType.DETAILED)
         {
             // Broadcasts the public death message
             Bukkit.broadcastMessage(log.getSimpleDeathMessage());
 
             // messages the dead player their death details
-            CombatClient combatHistory = getCombatClient(event.getEntity().getName());
-            String livingStats = F.C_EMPHASIS2 + combatHistory.getKillsSinceDeath() + " kills" + F.C_CONTENT + " - " +
-                    F.C_EMPHASIS2 + combatHistory.getAssistsSinceDeath() + " assists";
-            event.getEntity().sendMessage(F.componentMessage("Life Stats", livingStats));
-
             for (String detail : log.getDeathDetails())
             {
                 event.getEntity().sendMessage(detail);
             }
+
+            CombatClient combatHistory = getCombatClient(event.getEntity().getName());
+            String livingStats = F.C_EMPHASIS2 + combatHistory.getKillsSinceDeath() + " kills" + F.C_CONTENT + " - " +
+                    F.C_EMPHASIS2 + combatHistory.getAssistsSinceDeath() + " assists";
+            event.getEntity().sendMessage(F.componentMessage("Life Stats", livingStats));
         }
 
         // Logs player stats
@@ -337,6 +384,12 @@ public class CombatManager extends Component implements Listener {
         _combatLogs.remove(event.getEntity());
     }
 
+    /**
+     * Gets the current combat log for the given player.
+     *
+     * @param player the player whose combat log is being retrieved
+     * @return the CombatLog associated with the given player
+     */
     public CombatLog getCombatLog(Player player)
     {
         if (_combatLogs.containsKey(player))
@@ -356,7 +409,7 @@ public class CombatManager extends Component implements Listener {
      *
      * @param log the combat log for the player that was killed
      */
-    public void handleKillLog(CombatLog log)
+    private void handleKillLog(CombatLog log)
     {
         // Logs the death
         getCombatClient(log.getPlayer().getName()).logDeath(log);
@@ -379,11 +432,23 @@ public class CombatManager extends Component implements Listener {
         }
     }
 
+    /**
+     * Sets the CombatLog for the given player.
+     *
+     * @param player the player whose CombatLog is being set
+     * @param combatLog the player's new CombatLog
+     */
     public void setCombatLog(Player player, CombatLog combatLog)
     {
         _combatLogs.put(player, combatLog);
     }
 
+    /**
+     * Gets the CombatClient associated with the given player
+     *
+     * @param player the player whose CombatClient is being retrieved
+     * @return the CombatClient belonging to the player
+     */
     public CombatClient getCombatClient(String player)
     {
         if (_combatClients.containsKey(player))
@@ -407,11 +472,20 @@ public class CombatManager extends Component implements Listener {
         _combatClients.clear();
     }
 
+    /**
+     * Sets the CombatClient for the given player.
+     *
+     * @param player the player whose CombatClient is being set
+     * @param combatClient the player's new CombatClient
+     */
     public void setCombatClient(String player, CombatClient combatClient)
     {
         _combatClients.put(player, combatClient);
     }
 
+    /**
+     * Clears old damage from all of the combat logs.
+     */
     @EventHandler
     public void clearOldDamage(TimerEvent event)
     {
@@ -424,6 +498,9 @@ public class CombatManager extends Component implements Listener {
         }
     }
 
+    /**
+     * Clears the combat history of any players that left the server.
+     */
     @EventHandler
     public void cleanCombatHistory(TimerEvent event)
     {

@@ -16,12 +16,15 @@ public class DamageChange {
      * @param source the source of the damage modification
      * @param mod the modification applied to the damage
      * @param reason the reason for the damage modification
+     * @param useReason if the reason should be included with the weapon used to kill the damagee if they
+     *                  were killed by a player
      */
     public DamageChange(String source, double mod, String reason, boolean useReason)
     {
         _source = source;
         _mod = mod;
         _reason = reason;
+        _useReason = useReason;
     }
 
     /**
@@ -55,7 +58,8 @@ public class DamageChange {
     }
 
     /**
-     * Returns whether or not the reason should be used in the death message.
+     * Returns whether or not the reason should be used in the death message with the weapon used to kill the damagee
+     * if the damager is a player.
      *
      * @return true if the reason should be included, otherwise false
      */

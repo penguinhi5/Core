@@ -1,36 +1,56 @@
 package core.minecraft.combat;
 
-import core.minecraft.damage.DamageChange;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Represents an instance where a player was damaged by an entity.
  */
 public class CombatDamage {
 
+    // The name of the entity that caused the damage
     private String _entityName;
-    private String _source;
+    // The reason the damage was dealt
+    private String _reason;
+    // The amount of damage that was dealt
     private double _damage;
 
-    public CombatDamage(String entityName, String source, double damage)
+    /**
+     * Creates a new combatDamage instance.
+     *
+     * @param entityName the name of the entity that caused the damage
+     * @param reason the reason the damage was dealt
+     * @param damage the amount of damage that was dealt
+     */
+    public CombatDamage(String entityName, String reason, double damage)
     {
         _entityName = entityName;
-        _source = source;
+        _reason = reason;
         _damage = damage;
     }
 
+    /**
+     * Gets the name of the entity that caused the damage.
+     *
+     * @return the name of the cause of the damage
+     */
     public String getName()
     {
         return _entityName;
     }
 
-    public String getSource()
+    /**
+     * Gets the reason the damage was dealt.
+     *
+     * @return the reason the damage was dealt
+     */
+    public String getReason()
     {
-        return _source;
+        return _reason;
     }
 
+    /**
+     * Gets the amount of damage that was dealt.
+     *
+     * @return the amount of damage that was dealt
+     */
     public double getDamage()
     {
         return _damage;
