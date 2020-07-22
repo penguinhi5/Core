@@ -13,7 +13,7 @@ public abstract class Component {
 
     private String _name;
     private JavaPlugin _plugin;
-    private CommandManager _commandManager;
+    protected CommandManager _commandManager;
 
     /**
      * This creates a new Component with the given name under plugin.

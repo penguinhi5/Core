@@ -28,9 +28,9 @@ public abstract class MultiCommandBase extends CommandBase {
      * @param aliases any additional command labels
      * @param requiredRank the rank required to execute the command
      */
-    public MultiCommandBase(ClientManager clientManager, String name, String[] aliases, Rank requiredRank)
+    public MultiCommandBase(ClientManager clientManager, String name, String[] aliases, boolean isHidden, Rank requiredRank)
     {
-        super(clientManager, name, aliases, requiredRank);
+        super(clientManager, name, aliases, isHidden, requiredRank);
         _subCommands = new HashMap<>();
     }
 
@@ -42,9 +42,9 @@ public abstract class MultiCommandBase extends CommandBase {
      * @param requiredRank the rank required to execute the command
      * @param additionalRanks any additional ranks that can run the command
      */
-    public MultiCommandBase(ClientManager clientManager, String name, String[] aliases, Rank requiredRank, Rank[] additionalRanks)
+    public MultiCommandBase(ClientManager clientManager, String name, String[] aliases, boolean isHidden, Rank requiredRank, Rank[] additionalRanks)
     {
-        super(clientManager, name, aliases, requiredRank, additionalRanks);
+        super(clientManager, name, aliases, isHidden, requiredRank, additionalRanks);
         _subCommands = new HashMap<>();
     }
 
@@ -133,5 +133,17 @@ public abstract class MultiCommandBase extends CommandBase {
     public void setDefaultCommand(CommandInstance command)
     {
         _defaultCommand = command;
+    }
+
+    public String getHelpCommandMessage()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (CommandInstance command : _subCommands.values())
+        {
+            stringBuilder.append(command.getHelpCommandMessage());
+            stringBuilder.append("\n");
+        }
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+        return stringBuilder.toString();
     }
 }

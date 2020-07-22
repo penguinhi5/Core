@@ -1,6 +1,7 @@
 package core.minecraft.chat;
 
 import core.minecraft.Component;
+import core.minecraft.chat.command.HelpCommand;
 import core.minecraft.chat.command.MessageCommand;
 import core.minecraft.chat.command.ReplyCommand;
 import core.minecraft.chat.command.MuteCommand;
@@ -148,6 +149,7 @@ public class ChatManager extends Component implements Listener {
         addCommand(new MessageCommand(this, _clientManager));
         addCommand(new ReplyCommand(this, _clientManager));
         addCommand(new MuteCommand(this, _clientManager));
+        addCommand(new HelpCommand(_commandManager, _clientManager));
     }
 
     /**

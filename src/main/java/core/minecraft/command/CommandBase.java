@@ -20,6 +20,7 @@ public abstract class CommandBase implements CommandInstance {
 
     protected String _name;
     protected List<String> _aliases;
+    protected boolean _isHidden;
     protected Rank _requiredRank;
     protected Rank[] _additionalRanks;
     protected ClientManager _clientManager;
@@ -29,11 +30,12 @@ public abstract class CommandBase implements CommandInstance {
      *
      * @param name the name of the command that must be types in chat in order to execute the command
      * @param aliases any aliases can be typed in chat that will also execute the command
+     * @param isHidden if the command should be hidden from all command lists
      * @param requiredRank the rank required to execute the command
      */
-    public CommandBase(ClientManager clientManager, String name, String[] aliases, Rank requiredRank)
+    public CommandBase(ClientManager clientManager, String name, String[] aliases, boolean isHidden, Rank requiredRank)
     {
-        this(clientManager, name, aliases, requiredRank, new Rank[] {});
+        this(clientManager, name, aliases, isHidden, requiredRank, new Rank[] {});
     }
 
     /**
@@ -41,26 +43,22 @@ public abstract class CommandBase implements CommandInstance {
      *
      * @param name the name of the command that must be types in chat in order to execute the command
      * @param aliases any aliases can be typed in chat that will also execute the command
+     * @param isHidden if the command should be hidden from all command lists
      * @param requiredRank the rank required to execute the command
      * @param additionalRanks any additional ranks that can execute the command
      */
-    public CommandBase(ClientManager clientManager, String name, String[] aliases, Rank requiredRank, Rank[] additionalRanks)
+    public CommandBase(ClientManager clientManager, String name, String[] aliases, boolean isHidden, Rank requiredRank, Rank[] additionalRanks)
     {
         _clientManager = clientManager;
         _name = name;
         _aliases = Arrays.asList(aliases);
+        _isHidden = isHidden;
         _requiredRank = requiredRank;
         _additionalRanks = additionalRanks;
     }
 
     public abstract void execute(Player player, String[] args);
 
-    /**
-     * Checks if the specified player has the permissions necessary to execute the command.
-     *
-     * @param player the player executing the command
-     * @return if the player has permission to execute the command
-     */
     public boolean hasPermission(Player player)
     {
         Rank playerRank = _clientManager.getPlayerData(player.getName()).getRank();
@@ -79,40 +77,27 @@ public abstract class CommandBase implements CommandInstance {
         return false;
     }
 
-    /**
-     * Returns a list containing all the aliases that can run the command.
-     *
-     * @return a list of all of the aliases that can run the command
-     */
     public Collection<String> getAliases()
     {
         return _aliases;
     }
 
-    /**
-     * Returns that rank that a player must have to execute this command.
-     *
-     * @return the rank that is required to execute this command.
-     */
     public Rank getRequiredRank()
     {
         return _requiredRank;
     }
 
-    /**
-     * Gets the command name used to execute the command
-     *
-     * @return the command name used to execute the command
-     */
     public String getName()
     {
         return _name;
     }
 
-    /**
-     * Returns the proper usage of this command.
-     *
-     * @return the proper usage of this command
-     */
+    public boolean isHidden()
+    {
+        return _isHidden;
+    }
+
     public abstract String getProperUsageMessage();
+
+    public abstract String getHelpCommandMessage();
 }

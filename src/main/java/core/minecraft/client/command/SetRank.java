@@ -27,7 +27,7 @@ public class SetRank extends CommandBase {
      */
     public SetRank(ClientManager plugin)
     {
-        super(plugin, "setrank", new String[] {"updaterank"}, Rank.ADMIN);
+        super(plugin, "setrank", new String[] {"updaterank"}, false, Rank.ADMIN);
         _clientManager = plugin;
     }
 
@@ -115,5 +115,11 @@ public class SetRank extends CommandBase {
     public String getProperUsageMessage()
     {
         return F.properCommandUsageMessage("/setrank <player> <rank>", "/setrank penguinhi5 MOD");
+    }
+
+    @Override
+    public String getHelpCommandMessage()
+    {
+        return F.helpCommandMessage("/setrank <player> <rank>", "Updates the rank of the specified player.");
     }
 }

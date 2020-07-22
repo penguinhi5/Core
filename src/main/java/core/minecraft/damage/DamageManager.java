@@ -1,5 +1,6 @@
 package core.minecraft.damage;
 
+import com.comphenix.protocol.utility.MinecraftReflection;
 import core.minecraft.Component;
 import core.minecraft.combat.CombatManager;
 import core.minecraft.command.CommandManager;

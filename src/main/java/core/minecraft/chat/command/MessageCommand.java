@@ -20,7 +20,7 @@ public class MessageCommand extends CommandBase {
 
     public MessageCommand(ChatManager chatManager, ClientManager clientManager)
     {
-        super(clientManager, "message", new String[] {"msg"}, Rank.DEFAULT);
+        super(clientManager, "message", new String[] {"msg"}, false, Rank.DEFAULT);
         _chatManager = chatManager;
     }
 
@@ -67,5 +67,11 @@ public class MessageCommand extends CommandBase {
         String usage = "/msg <player> <message>";
         String example = "/msg rando1812 how are you doing?";
         return F.properCommandUsageMessage(usage, example);
+    }
+
+    @Override
+    public String getHelpCommandMessage()
+    {
+        return F.helpCommandMessage("/message <player> <message>", "Sends a message that will only be seen by the specified player.");
     }
 }

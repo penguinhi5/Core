@@ -72,4 +72,17 @@ public class F {
                 C_PREFIX + "[" + "Command" + "] " + C_CONTENT + "Example: " + C_EMPHASIS1 + example + C_CONTENT + ".";
         return msg;
     }
+
+    /**
+     * Generates the description of a command that can be included in a command list.
+     *
+     * @param usage the proper format to execute a command
+     * @param description the description of the command
+     * @return the complete proper command description
+     */
+    public static String helpCommandMessage(String usage, String description)
+    {
+        String msg = C_EMPHASIS2 + usage + " " + C_CONTENT + description;
+        return msg;
+    }
 }

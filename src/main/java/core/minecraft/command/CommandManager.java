@@ -1,16 +1,16 @@
 package core.minecraft.command;
 
+import core.minecraft.chat.command.HelpCommand;
+import core.minecraft.client.ClientManager;
 import core.minecraft.common.F;
 import core.minecraft.common.Rank;
-import core.minecraft.common.utils.PlayerUtil;
-import javafx.scene.layout.Priority;
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -22,6 +22,7 @@ public class CommandManager implements Listener {
 
     private static JavaPlugin _plugin;
     private HashMap<String, CommandInstance> _commands;
+    private HashMap<CommandInstance, ArrayList<String>> _parentCommands;
 
     /**
      * Creates a new instance of CommandManager.
@@ -32,6 +33,7 @@ public class CommandManager implements Listener {
     {
         _plugin = plugin;
         _commands = new HashMap<>();
+        _parentCommands = new HashMap<>();
         _plugin.getServer().getPluginManager().registerEvents(this, _plugin);
     }
 
@@ -72,11 +74,14 @@ public class CommandManager implements Listener {
      */
     public void addCommand(CommandInstance command)
     {
-        _commands.put(command.getName(), command);
+        _commands.put(command.getName().toLowerCase(), command);
+        ArrayList<String> children = new ArrayList<>();
         for (String commandName : command.getAliases())
         {
             _commands.put(commandName.toLowerCase(), command);
+            children.add(commandName);
         }
+        _parentCommands.put(command, children);
     }
 
     /**
@@ -90,5 +95,48 @@ public class CommandManager implements Listener {
         {
             _commands.remove(commandName);
         }
+    }
+
+    public void sendCommandListToPlayer(Player player, int page)
+    {
+        // Gets all of the commands the player has access to
+        ArrayList<String> commands = new ArrayList<>();
+        int skipCount = 0;
+        for (CommandInstance command : _parentCommands.keySet())
+        {
+            if (command.hasPermission(player) && !command.isHidden())
+            {
+                if (_parentCommands.get(command).size() > 0) // If the command has aliases
+                {
+                    String dsc = "";
+                    dsc = command.getHelpCommandMessage() + " Aliases: ";
+                    for (String child : _parentCommands.get(command))
+                    {
+                        dsc += "/" + child;
+                    }
+                    commands.add(dsc);
+                }
+                else // If the command hos no aliases
+                {
+                    commands.add(command.getHelpCommandMessage());
+                }
+            }
+        }
+
+        // Ensures the requested page is not large than the page count
+        double commandsPerPage = 5.0D;
+        int pageCount = (int) Math.ceil((double) commands.size() / commandsPerPage);
+        if (page > pageCount)
+            page = pageCount;
+
+        // Gets the specified page
+        String initialMessage = F.C_PREFIX + "[Help] " + F.C_EMPHASIS1 + "/help [page]";
+        StringBuilder stringBuilder = new StringBuilder(initialMessage);
+        for (int i = (int)commandsPerPage * (page - 1); i < Math.min(commands.size(), commandsPerPage * page); i++)
+        {
+            stringBuilder.append("\n" + commands.get(i));
+        }
+        stringBuilder.append("\n" + F.C_PREFIX + "[Help]" + F.C_EMPHASIS1 + " Page " + page + " of " + pageCount);
+        player.sendMessage(stringBuilder.toString());
     }
 }

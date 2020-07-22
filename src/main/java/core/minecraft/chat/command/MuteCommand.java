@@ -20,7 +20,7 @@ public class MuteCommand extends CommandBase {
 
     public MuteCommand(ChatManager chatManager, ClientManager clientManager)
     {
-        super(clientManager, "mute", new String[] {}, Rank.SENIOR_MOD);
+        super(clientManager, "mute", new String[] {}, false, Rank.SENIOR_MOD);
         _chatManager = chatManager;
     }
 
@@ -63,8 +63,15 @@ public class MuteCommand extends CommandBase {
     @Override
     public String getProperUsageMessage()
     {
-        String usage = "/silence [seconds]";
-        String example = "/silence 60";
+        String usage = "/mute [seconds]";
+        String example = "/mute 60";
         return F.properCommandUsageMessage(usage, example);
+    }
+
+    @Override
+    public String getHelpCommandMessage()
+    {
+        String dsc = "Mutes the chat for the specified amount of seconds. If no number is provided the chat will be muted forever.";
+        return F.helpCommandMessage("/mute [seconds]", dsc);
     }
 }
